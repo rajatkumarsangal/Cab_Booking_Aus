@@ -2,11 +2,35 @@ const state = {
   step: 2,
   tripMode: "now",
   fareMode: "fixed",
-  vehicle: "metro",
-  payment: "card"
+  vehicle: "next",
+  payment: ""
 };
 
 const vehicleData = {
+  next: {
+    label: "Next Available",
+    base: 18,
+    rate: 2.8,
+    etaOffset: 2
+  },
+  silver: {
+    label: "Silver Service",
+    base: 26,
+    rate: 3.4,
+    etaOffset: 4
+  },
+  sedan: {
+    label: "Sedan",
+    base: 20,
+    rate: 2.9,
+    etaOffset: 3
+  },
+  wheelchair: {
+    label: "Wheelchair",
+    base: 24,
+    rate: 3.2,
+    etaOffset: 5
+  },
   metro: {
     label: "Metro",
     base: 18,
@@ -60,6 +84,12 @@ const confirmationRoute = document.getElementById("confirmation-route");
 const confirmationFare = document.getElementById("confirmation-fare");
 const stepRoutePickup = document.getElementById("step-route-pickup");
 const stepRouteDestination = document.getElementById("step-route-destination");
+const bookingResults = document.getElementById("booking-results");
+const requestBooking = document.getElementById("request-booking");
+const paymentMethod = document.getElementById("payment-method");
+const driverNotesCount = document.getElementById("driver-notes-count");
+const bookingConfirmation = document.getElementById("booking-confirmation");
+const carsListToggle = document.getElementById("cars-list-toggle");
 
 const progressPills = document.querySelectorAll("[data-progress-step]");
 const stepPanels = document.querySelectorAll("[data-step-panel]");
@@ -247,7 +277,7 @@ function updateRouteBrief(pickup, destination) {
 
 function calculateTrip() {
   const { pickup, destination } = getRouteValues();
-  const vehicle = vehicleData[state.vehicle];
+  const vehicle = vehicleData[state.vehicle] || vehicleData.next;
   updateRouteBrief(pickup, destination);
 
   if (!pickup || !destination) {
@@ -308,21 +338,22 @@ function calculateTrip() {
 
 function updatePaymentSummary() {
   const checked = document.querySelector('input[name="payment"]:checked');
-  state.payment = checked ? checked.value : "card";
+  state.payment = paymentMethod ? paymentMethod.value : (checked ? checked.value : "");
 
   const labels = {
+    "": "Not selected",
     card: "Card",
     cash: "Cash",
     account: "Business Account"
   };
 
-  setText(summaryPayment, labels[state.payment]);
+  setText(summaryPayment, labels[state.payment] || "Not selected");
 }
 
 function updateVehicleSummary() {
   const selected = document.querySelector('input[name="vehicle"]:checked');
-  state.vehicle = selected ? selected.value : "metro";
-  setText(summaryVehicle, vehicleData[state.vehicle].label);
+  state.vehicle = selected ? selected.value : "next";
+  setText(summaryVehicle, (vehicleData[state.vehicle] || vehicleData.next).label);
 }
 
 function validateRouteFields(errorElement) {
@@ -362,6 +393,21 @@ function validateStepTwo() {
 
   if (state.tripMode === "later" && detailDate && detailTime && (!detailDate.value || !detailTime.value)) {
     showMessage(detailError, "Scheduled rides need both date and time before confirmation.");
+    return false;
+  }
+
+  if (passengerName && !passengerName.value.trim()) {
+    showMessage(detailError, "Please enter passenger name.");
+    return false;
+  }
+
+  if (passengerPhone && !passengerPhone.value.trim()) {
+    showMessage(detailError, "Please enter contact number.");
+    return false;
+  }
+
+  if (!state.payment) {
+    showMessage(detailError, "Please select a payment method.");
     return false;
   }
 
@@ -430,20 +476,49 @@ function updateConfirmation() {
   const trip = calculateTrip();
   const { pickup, destination } = getRouteValues();
 
-  confirmationReference.textContent = generateReference();
-  confirmationPassenger.textContent = passengerName ? (passengerName.value.trim() || "Guest") : "Guest";
-  confirmationRoute.textContent = `${pickup.split(",")[0]} to ${destination.split(",")[0]}`;
-  confirmationFare.textContent = formatCurrency(trip.fare);
+  setText(confirmationReference, generateReference());
+  setText(confirmationPassenger, passengerName ? (passengerName.value.trim() || "Guest") : "Guest");
+  setText(confirmationRoute, `${pickup.split(",")[0]} to ${destination.split(",")[0]}`);
+  setText(confirmationFare, formatCurrency(trip.fare));
+}
+
+function revealBookingResults() {
+  if (!bookingResults) {
+    return;
+  }
+
+  bookingResults.hidden = false;
+  bookingResults.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function updateDriverNotesCount() {
+  if (!pickupNotes || !driverNotesCount) {
+    return;
+  }
+
+  driverNotesCount.textContent = String(320 - pickupNotes.value.length);
 }
 
 function resetFlow() {
   state.step = 2;
   state.tripMode = "now";
   state.fareMode = "fixed";
-  state.vehicle = "metro";
-  state.payment = "card";
+  state.vehicle = "next";
+  state.payment = "";
 
-  document.getElementById("booking-form").reset();
+  const bookingForm = document.getElementById("booking-form");
+  if (bookingForm) {
+    bookingForm.reset();
+  }
+
+  if (paymentMethod) {
+    paymentMethod.value = "";
+  }
+
+  if (bookingConfirmation) {
+    bookingConfirmation.hidden = true;
+  }
+
   if (vehicleInputs[0]) {
     vehicleInputs[0].checked = true;
   }
@@ -461,6 +536,7 @@ function resetFlow() {
   showMessage(quickError, "");
   showMessage(detailError, "");
   calculateTrip();
+  updateDriverNotesCount();
   setStep(2);
 }
 
@@ -490,6 +566,22 @@ vehicleInputs.forEach((input) => {
 paymentInputs.forEach((input) => {
   input.addEventListener("change", updatePaymentSummary);
 });
+
+if (paymentMethod) {
+  paymentMethod.addEventListener("change", updatePaymentSummary);
+}
+
+if (pickupNotes) {
+  pickupNotes.addEventListener("input", updateDriverNotesCount);
+}
+
+if (carsListToggle) {
+  carsListToggle.addEventListener("click", () => {
+    const carsListSection = carsListToggle.closest(".cars-list-section");
+    const isCollapsed = carsListSection ? carsListSection.classList.toggle("is-collapsed") : false;
+    carsListToggle.setAttribute("aria-expanded", String(!isCollapsed));
+  });
+}
 
 [quickPickup, quickDestination, detailPickup, detailDestination, detailDate, detailTime].filter(Boolean).forEach((field) => {
   field.addEventListener("input", () => {
@@ -538,11 +630,7 @@ heroSearch.addEventListener("click", () => {
   calculateTrip();
   highlightMockRoute();
   setStep(2);
-
-  const bookingStudio = document.getElementById("booking-studio");
-  if (bookingStudio) {
-    bookingStudio.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
+  revealBookingResults();
 });
 
 if (continueToDetails) {
@@ -584,6 +672,23 @@ if (confirmBooking) {
   });
 }
 
+if (requestBooking) {
+  requestBooking.addEventListener("click", () => {
+    updatePaymentSummary();
+
+    if (!validateStepTwo()) {
+      return;
+    }
+
+    updateConfirmation();
+
+    if (bookingConfirmation) {
+      bookingConfirmation.hidden = false;
+      bookingConfirmation.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  });
+}
+
 progressPills.forEach((pill) => {
   pill.addEventListener("click", () => {
     const targetStep = Number(pill.dataset.progressStep);
@@ -617,5 +722,6 @@ updateFareModeUI();
 updateVehicleSummary();
 updatePaymentSummary();
 calculateTrip();
+updateDriverNotesCount();
 highlightMockRoute();
 setStep(2);

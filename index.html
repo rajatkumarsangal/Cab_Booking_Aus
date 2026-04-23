@@ -124,6 +124,237 @@
       </div>
     </section>
 
+    <section class="booking-results" id="booking-results" hidden>
+      <div class="booking-results-layout">
+        <div class="booking-results-main">
+          <section class="booking-result-section fare-mode-section" aria-labelledby="fare-mode-title">
+            <div class="section-inline-header">
+              <div>
+                <span class="step-label">Step 1 of 4</span>
+                <h2 id="fare-mode-title">Fare type</h2>
+              </div>
+              <span class="mini-chip" id="fare-mode-badge">Fixed Fare</span>
+            </div>
+
+            <div class="fare-toggle" aria-label="Fare type">
+              <button class="fare-toggle-option is-active" type="button" data-fare-mode="fixed">
+                Fixed Price
+              </button>
+              <button class="fare-toggle-option" type="button" data-fare-mode="estimate">
+                Estimate Price
+              </button>
+            </div>
+          </section>
+
+          <section class="booking-result-section cars-list-section" aria-labelledby="cars-list-title">
+            <button class="cars-list-header" id="cars-list-toggle" type="button" aria-expanded="true" aria-controls="cars-list">
+              <span id="cars-list-title">More vehicle/service options</span>
+              <span class="chevron-up" aria-hidden="true"></span>
+            </button>
+
+            <div class="cars-list" id="cars-list">
+              <label class="car-list-row">
+                <input type="radio" name="vehicle" value="next" checked>
+                <span class="car-selected-bar" aria-hidden="true"></span>
+                <span class="vehicle-thumb taxi-thumb" aria-hidden="true">
+                  <span></span>
+                </span>
+                <span class="car-copy">
+                  <strong>Next Available</strong>
+                  <span>1 - 4 passengers</span>
+                </span>
+                <span class="info-dot" aria-hidden="true">i</span>
+                <span class="car-fare-copy">
+                  <strong>Fare Estimate</strong>
+                  <span>Dest required</span>
+                </span>
+              </label>
+
+              <label class="car-list-row">
+                <input type="radio" name="vehicle" value="silver">
+                <span class="car-selected-bar" aria-hidden="true"></span>
+                <span class="vehicle-thumb silver-thumb" aria-hidden="true">
+                  <span></span>
+                </span>
+                <span class="car-copy">
+                  <strong>Silver Service</strong>
+                  <span>1 - 4 passengers</span>
+                </span>
+                <span class="info-dot" aria-hidden="true">i</span>
+                <span class="car-fare-copy">
+                  <strong>Fare Estimate</strong>
+                  <span>Dest required</span>
+                </span>
+              </label>
+
+              <label class="car-list-row">
+                <input type="radio" name="vehicle" value="sedan">
+                <span class="car-selected-bar" aria-hidden="true"></span>
+                <span class="vehicle-thumb taxi-thumb" aria-hidden="true">
+                  <span></span>
+                </span>
+                <span class="car-copy">
+                  <strong>Sedan</strong>
+                  <span>1 - 4 passengers</span>
+                </span>
+                <span class="info-dot" aria-hidden="true">i</span>
+                <span class="car-fare-copy">
+                  <strong>Fare Estimate</strong>
+                  <span>Dest required</span>
+                </span>
+              </label>
+
+              <label class="car-list-row">
+                <input type="radio" name="vehicle" value="wheelchair">
+                <span class="car-selected-bar" aria-hidden="true"></span>
+                <span class="vehicle-thumb access-thumb" aria-hidden="true">WC</span>
+                <span class="car-copy">
+                  <strong>Wheelchair</strong>
+                  <span>Accessible Taxi</span>
+                </span>
+                <span class="info-dot" aria-hidden="true">i</span>
+                <span class="car-fare-copy">
+                  <strong>Fare Estimate</strong>
+                  <span>Dest required</span>
+                </span>
+              </label>
+
+              <label class="car-list-row">
+                <input type="radio" name="vehicle" value="maxi">
+                <span class="car-selected-bar" aria-hidden="true"></span>
+                <span class="vehicle-thumb maxi-thumb" aria-hidden="true">
+                  <span></span>
+                </span>
+                <span class="car-copy">
+                  <strong>MAXI TAXI</strong>
+                  <span>1 - 11 passengers</span>
+                </span>
+                <span class="info-dot" aria-hidden="true">i</span>
+                <span class="car-fare-copy">
+                  <strong>Fare Estimate</strong>
+                  <span>Dest required</span>
+                </span>
+              </label>
+            </div>
+          </section>
+
+          <section class="booking-result-section contact-details-section" aria-labelledby="contact-details-title">
+            <span class="step-label">Step 2 of 4</span>
+            <h2 id="contact-details-title">Contact details</h2>
+
+            <div class="contact-fields">
+              <label class="result-field field-full-width">
+                <span>Passenger name</span>
+                <input id="passenger-name" type="text" placeholder="Passenger name" autocomplete="name">
+              </label>
+
+              <label class="result-field country-code-field">
+                <span>Country code</span>
+                <input type="text" value="AU +61" readonly aria-label="Australia country code">
+              </label>
+
+              <label class="result-field">
+                <span>Contact number</span>
+                <input id="passenger-phone" type="tel" placeholder="Contact number" autocomplete="tel">
+              </label>
+            </div>
+          </section>
+
+          <section class="booking-result-section payment-section" aria-labelledby="payment-title">
+            <span class="step-label">Step 3 of 4</span>
+            <h2 id="payment-title">Payment</h2>
+
+            <label class="result-field">
+              <span>Payment method</span>
+              <select id="payment-method">
+                <option value="">Please select</option>
+                <option value="card">Card</option>
+                <option value="cash">Cash</option>
+                <option value="account">Business Account</option>
+              </select>
+            </label>
+          </section>
+
+          <section class="booking-result-section driver-instruction-section" aria-labelledby="driver-instruction-title">
+            <span class="step-label">Step 4 of 4</span>
+            <h2 id="driver-instruction-title">Driver instruction</h2>
+
+            <label class="result-field">
+              <span>Notes for driver</span>
+              <textarea id="pickup-notes" maxlength="320" rows="4" placeholder="Notes for driver"></textarea>
+            </label>
+            <p class="character-count"><span id="driver-notes-count">320</span> characters left</p>
+          </section>
+
+          <p class="panel-message" id="detail-error" hidden></p>
+          <button class="button-primary request-booking-button" id="request-booking" type="button">
+            Request Booking
+          </button>
+
+          <section class="booking-confirmation" id="booking-confirmation" hidden>
+            <span class="confirmation-badge">Request received</span>
+            <h2>Booking request sent</h2>
+            <div class="confirmation-grid">
+              <div class="confirmation-card">
+                <span>Reference</span>
+                <strong id="confirmation-reference">RW-000000</strong>
+              </div>
+              <div class="confirmation-card">
+                <span>Passenger</span>
+                <strong id="confirmation-passenger">Guest</strong>
+              </div>
+              <div class="confirmation-card">
+                <span>Route</span>
+                <strong id="confirmation-route">Pickup to drop</strong>
+              </div>
+              <div class="confirmation-card">
+                <span>Fare</span>
+                <strong id="confirmation-fare">$ --</strong>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <aside class="booking-result-section trip-summary-section" aria-labelledby="trip-summary-title">
+          <span class="step-label">Trip summary</span>
+          <h2 id="trip-summary-title">Total trip</h2>
+
+          <p class="summary-route" id="summary-route-title">Waiting for route</p>
+          <p class="summary-route-copy" id="summary-route-copy">Add pickup and destination to calculate the preview.</p>
+
+          <div class="summary-stats">
+            <div>
+              <span>Total km</span>
+              <strong id="summary-distance">-- km</strong>
+            </div>
+            <div>
+              <span>Total time</span>
+              <strong id="summary-duration">-- min</strong>
+            </div>
+            <div>
+              <span id="summary-fare-label">Fixed Fare</span>
+              <strong id="summary-fare">$ --</strong>
+            </div>
+          </div>
+
+          <div class="summary-meta">
+            <p>
+              <span>Vehicle</span>
+              <strong id="summary-vehicle">Next Available</strong>
+            </p>
+            <p>
+              <span>Payment</span>
+              <strong id="summary-payment">Not selected</strong>
+            </p>
+            <p>
+              <span>Trip time</span>
+              <strong id="summary-trip-time">Book now</strong>
+            </p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
     <section class="benefits" id="benefits">
       <div class="section-heading">
         <p class="eyebrow">Why this UI works</p>
