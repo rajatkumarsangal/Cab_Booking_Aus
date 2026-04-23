@@ -110,6 +110,7 @@ const bookAnother = document.getElementById("book-another");
 
 const defaultMapSource = "https://maps.google.com/maps?q=Brisbane%20Australia&z=12&output=embed";
 let googleMapsLoadPromise;
+let latestTripMetrics = null;
 
 function getGoogleMapsConfig() {
   const baseConfig = window.ROUTEWAVE_GOOGLE_MAPS_CONFIG || {};
@@ -119,7 +120,8 @@ function getGoogleMapsConfig() {
     region: baseConfig.region || "AU",
     country: baseConfig.country || "au",
     mapMode: baseConfig.mapMode || "driving",
-    mapId: baseConfig.mapId || ""
+    mapId: baseConfig.mapId || "",
+    autoUseGoogleRouteSummary: baseConfig.autoUseGoogleRouteSummary !== false
   };
 }
 
@@ -246,6 +248,115 @@ function initializeGoogleMapsAutocomplete() {
     .catch(() => {
       setText(routeMapStatus, "Google Places not configured yet");
     });
+}
+
+function buildFallbackTripMetrics(pickup, destination, vehicle) {
+  let distance = Math.round((pickup.length * 0.55) + (destination.length * 0.45));
+  distance = Math.max(6, Math.min(distance, 42));
+
+  if (/airport/i.test(`${pickup} ${destination}`)) {
+    distance += 5;
+  }
+
+  if (state.vehicle === "maxi") {
+    distance += 3;
+  }
+
+  let duration = Math.round(distance * 3.6 + vehicle.etaOffset);
+  if (state.tripMode === "later") {
+    duration += 4;
+  }
+
+  return {
+    source: "fallback",
+    distanceKm: distance,
+    durationMin: duration
+  };
+}
+
+function calculateFareFromMetrics(vehicle, metrics) {
+  let fare = vehicle.base + (metrics.distanceKm * vehicle.rate);
+
+  if (state.fareMode === "fixed") {
+    fare += 6;
+  } else {
+    fare -= 3;
+  }
+
+  if (state.tripMode === "later") {
+    fare += 4;
+  }
+
+  return Math.round(fare);
+}
+
+function getRouteMetricsSource(pickup, destination, vehicle) {
+  const pickupMeta = getSelectedPlaceMeta(quickPickup);
+  const destinationMeta = getSelectedPlaceMeta(quickDestination);
+  const config = getGoogleMapsConfig();
+
+  if (
+    config.autoUseGoogleRouteSummary &&
+    config.apiKey &&
+    pickupMeta.lat &&
+    pickupMeta.lng &&
+    destinationMeta.lat &&
+    destinationMeta.lng
+  ) {
+    const directDistanceKm = getDistanceBetweenPoints(
+      Number(pickupMeta.lat),
+      Number(pickupMeta.lng),
+      Number(destinationMeta.lat),
+      Number(destinationMeta.lng)
+    );
+    const adjustedDistanceKm = Math.max(2, Math.round(directDistanceKm * 1.28));
+    const adjustedDurationMin = Math.max(5, Math.round((adjustedDistanceKm / 28) * 60) + vehicle.etaOffset);
+
+    return {
+      source: "google-selected-place",
+      distanceKm: adjustedDistanceKm,
+      durationMin: adjustedDurationMin
+    };
+  }
+
+  return buildFallbackTripMetrics(pickup, destination, vehicle);
+}
+
+function getDistanceBetweenPoints(lat1, lng1, lat2, lng2) {
+  const toRadians = (degrees) => degrees * (Math.PI / 180);
+  const earthRadiusKm = 6371;
+  const deltaLat = toRadians(lat2 - lat1);
+  const deltaLng = toRadians(lng2 - lng1);
+  const startLat = toRadians(lat1);
+  const endLat = toRadians(lat2);
+  const haversine =
+    Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+    Math.sin(deltaLng / 2) * Math.sin(deltaLng / 2) * Math.cos(startLat) * Math.cos(endLat);
+  const arc = 2 * Math.atan2(Math.sqrt(haversine), Math.sqrt(1 - haversine));
+  return earthRadiusKm * arc;
+}
+
+function renderTripSummary(pickup, destination, vehicle, metrics) {
+  const fare = calculateFareFromMetrics(vehicle, metrics);
+
+  setText(summaryRouteTitle, `${pickup.split(",")[0]} to ${destination.split(",")[0]}`);
+  setText(summaryRouteCopy, `${pickup} to ${destination}`);
+  setText(summaryDistance, `${metrics.distanceKm} km`);
+  setText(summaryDuration, `${metrics.durationMin} min`);
+  setText(summaryFare, formatCurrency(fare));
+  setText(summaryVehicle, vehicle.label);
+  setText(summaryTripTime, state.tripMode === "later" && detailDate && detailTime && detailDate.value && detailTime.value
+    ? `${detailDate.value} at ${detailTime.value}`
+    : "Book now");
+
+  latestTripMetrics = {
+    source: metrics.source,
+    distance: metrics.distanceKm,
+    duration: metrics.durationMin,
+    fare
+  };
+
+  return latestTripMetrics;
 }
 
 function setDefaultSchedule() {
@@ -408,6 +519,7 @@ function calculateTrip() {
     setText(summaryDuration, "-- min");
     setText(summaryFare, "$ --");
     setText(summaryVehicle, vehicle.label);
+    latestTripMetrics = null;
     return {
       distance: 0,
       duration: 0,
@@ -415,46 +527,8 @@ function calculateTrip() {
     };
   }
 
-  let distance = Math.round((pickup.length * 0.55) + (destination.length * 0.45));
-  distance = Math.max(6, Math.min(distance, 42));
-
-  if (/airport/i.test(`${pickup} ${destination}`)) {
-    distance += 5;
-  }
-
-  if (state.vehicle === "maxi") {
-    distance += 3;
-  }
-
-  let duration = Math.round(distance * 3.6 + vehicle.etaOffset);
-  if (state.tripMode === "later") {
-    duration += 4;
-  }
-
-  let fare = vehicle.base + (distance * vehicle.rate);
-  if (state.fareMode === "fixed") {
-    fare += 6;
-  } else {
-    fare -= 3;
-  }
-
-  if (state.tripMode === "later") {
-    fare += 4;
-  }
-
-  fare = Math.round(fare);
-
-  setText(summaryRouteTitle, `${pickup.split(",")[0]} to ${destination.split(",")[0]}`);
-  setText(summaryRouteCopy, `${pickup} to ${destination}`);
-  setText(summaryDistance, `${distance} km`);
-  setText(summaryDuration, `${duration} min`);
-  setText(summaryFare, formatCurrency(fare));
-  setText(summaryVehicle, vehicle.label);
-  setText(summaryTripTime, state.tripMode === "later" && detailDate && detailTime && detailDate.value && detailTime.value
-    ? `${detailDate.value} at ${detailTime.value}`
-    : "Book now");
-
-  return { distance, duration, fare };
+  const metrics = getRouteMetricsSource(pickup, destination, vehicle);
+  return renderTripSummary(pickup, destination, vehicle, metrics);
 }
 
 function updatePaymentSummary() {

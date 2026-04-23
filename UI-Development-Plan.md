@@ -2,16 +2,23 @@
 
 ## Project Status
 
-This document has been updated to reflect the current implementation direction of the cab booking UI.
+This document reflects the current implementation of the cab booking UI and the Google Maps-ready architecture that has now been added.
 
-The project started as a planning document, but it now also serves as a simple reference for the structure that has already been created in the HTML application.
+The project is no longer a simple static mockup. It now includes:
+
+- a shared header and footer
+- a live booking flow on the home page
+- Google-map-ready pickup and drop inputs
+- an automatic trip summary pipeline
+- separate auth and contact pages
 
 ## Core Direction
 
 - Build a modern cab booking interface using plain `HTML`, `CSS`, and `JavaScript`
-- Use the reference website only for flow inspiration, not for visual copying
-- Keep the UI attractive, premium, and clearly different from the reference
-- Support direct navigation across the remaining pages while keeping app, offers, and driver content on the home page
+- Keep the booking flow on `index.html` as the main user experience
+- Use a real Google map preview instead of a mock map
+- Keep Google Maps integration configurable so an API key can be added later without changing app logic
+- Keep the UI premium, clean, and different from the original inspiration references
 
 ## Current Product Structure
 
@@ -21,22 +28,30 @@ File:
 - `index.html`
 
 Current purpose:
-- act as the landing page
-- show the sketch-inspired booking hero
-- provide pickup and drop search inputs
-- direct users into the booking journey
-- promote supporting areas like offers, app download, and driver onboarding on the same page
+- act as the main booking page
+- provide pickup and drop inputs
+- show a real Google map iframe preview
+- reveal booking sections after search
+- collect service, contact, payment, and driver instruction data
+- show a live trip summary
+- support app, offer, and driver-promotion sections lower on the same page
 
-Current sections on the page:
+Current sections:
 - shared header
-- sketch-style hero with pickup, drop, and search
+- hero booking panel
+- Google map preview
+- search result booking flow
+- fare mode section
+- car list section
+- contact details section
+- payment section
+- driver instruction section
+- trip summary section
+- confirmation section
 - benefits section
 - app showcase section
-- promotion / partner strip
+- partner / promotion strip
 - shared footer
-
-Important note:
-- the earlier multi-step booking studio that was originally planned on the home page has been removed from `index.html`
 
 ### 2. Contact Page
 
@@ -53,12 +68,12 @@ Files:
 - `signup.html`
 
 Current purpose:
-- keep account access as separate pages
-- maintain a cleaner navigation flow from the shared top bar
+- keep account access separate from the booking page
+- maintain cleaner navigation in the shared top bar
 
 ## Shared Layout Approach
 
-To avoid repeating the same header and footer across multiple HTML pages, a shared layout approach has been implemented.
+To avoid repeating the same header and footer across pages, the project uses a shared layout file.
 
 ### Shared Layout File
 
@@ -69,6 +84,7 @@ Responsibilities:
 - render the shared header
 - render the shared footer
 - highlight the active navigation item based on `data-page`
+- render the dummy image logo inside `.header-brand`
 
 ### Layout Placeholders Used In All Pages
 
@@ -77,60 +93,78 @@ Each page includes:
 - `<div id="site-header-root"></div>`
 - `<div id="site-footer-root"></div>`
 
-Each page also sets a page key using:
+Each page sets one of these page keys:
 
 - `data-page="home"`
 - `data-page="contact"`
 - `data-page="login"`
 - `data-page="signup"`
 
-## Header Direction
+## Google Maps Integration Strategy
 
-The header has been moved away from the copied white/orange reference style and aligned with the custom project theme.
+The project is now prepared for Google Maps integration in a way that avoids manual JavaScript rewrites later.
 
-Current direction:
-- dark premium header
-- custom navigation styling
-- separate-page navigation
-- logo-first branding direction instead of text-only branding
+### Config File
 
-Important note:
-- the visible `RouteWave` text branding has been replaced in the header direction by a logo-style placeholder mark
-- the final real logo asset can be swapped in later
+File:
+- `google-maps-config.js`
 
-## Footer Direction
+Purpose:
+- hold Google Maps settings in one place
+- allow API key insertion later
+- control map behavior without changing booking logic
 
-The footer is now shared across all pages through `layout.js`.
+Current config shape:
 
-Current purpose:
-- keep the site visually consistent
-- provide quick links across booking, app/download anchors, partner anchors, and support pages
-- avoid missing footer sections on individual pages
+- `apiKey`
+- `libraries`
+- `region`
+- `country`
+- `mapMode`
+- `mapId`
+- `autoUseGoogleRouteSummary`
 
-## Visual Theme
+### Current Behavior Without API Key
 
-The current UI direction stays aligned with the chosen project theme:
+- pickup and drop still work as normal text inputs
+- the map still updates using a Google embed URL
+- the trip summary uses fallback route estimation logic
 
-- dark atmospheric background
-- premium gold / amber accent styling
-- rounded glass-like panels
-- map-inspired visual elements
-- bold but clean hierarchy
+### Current Behavior After Adding API Key
 
-## What Changed From The Original Plan
+Once a valid Google Maps API key is added to `google-maps-config.js`:
 
-The original version of this file assumed:
+- pickup and drop inputs automatically gain Google Places autocomplete
+- selected places automatically store place metadata
+- map route updates automatically using selected place coordinates
+- trip summary automatically switches to Google-selected-place based route metrics
 
-- a more complete multi-step booking flow on the home page
-- booking details, service selection, payment, and confirmation sections all living inside `index.html`
+No manual code edits are required after adding the key.
 
-That direction has now been simplified.
+## Trip Summary Architecture
 
-Current reality:
-- `index.html` is focused more on landing experience and entry into the booking flow
-- the earlier booking studio sections were removed from the home page
-- navigation now opens separate pages for booking, support, and auth while using home-page anchors for app, offer, and driver content
-- shared header and footer are now centralized through `layout.js`
+The trip summary is now built through a generic pipeline instead of one hardcoded calculation block.
+
+Main functions in `script.js`:
+
+- `buildFallbackTripMetrics()`
+- `calculateFareFromMetrics()`
+- `getRouteMetricsSource()`
+- `getDistanceBetweenPoints()`
+- `renderTripSummary()`
+- `calculateTrip()`
+
+### Current Summary Logic
+
+If Google-selected place coordinates are not available:
+
+- the app uses fallback distance and duration estimation
+
+If Google-selected place coordinates are available and `autoUseGoogleRouteSummary` is enabled:
+
+- the app automatically uses coordinate-based route metrics
+
+This makes the summary source switch automatically based on available map data.
 
 ## Current Front-End Files
 
@@ -141,34 +175,50 @@ Current reality:
 - `styles.css`
 - `script.js`
 - `layout.js`
+- `google-maps-config.js`
+- `assets/dummy-logo.svg`
+
+## Removed Pages
+
+These pages are no longer part of the active project structure:
+
+- `company-website.html`
+- `fare-estimate.html`
+- `fare-estimate.js`
+
+Their navigation and footer references have already been removed.
+
+## Visual Direction
+
+The current UI direction includes:
+
+- dark atmospheric background
+- premium gold / amber accent styling
+- rounded glass-like panels
+- wider desktop layout with reduced left/right empty spacing
+- real image-based dummy logo in header and footer
+- booking-first page structure
 
 ## Recommended Next Improvements
 
 ### Priority 1
 
-- replace the placeholder logo mark with the final logo asset
-- clean up any unused booking-flow code left in `script.js`
-- make sure all pages follow the same spacing and content rhythm
+- replace the dummy logo with the final brand logo
+- connect exact Google Directions route distance and duration once API access is ready
+- refine validation and booking confirmation messaging
 
 ### Priority 2
 
-- improve the contact page and home-page partner sections with richer content blocks
-- add stronger mobile refinements across all screens
+- improve the contact page with richer content blocks
+- strengthen mobile spacing and responsive polish
+- add a better selected-place display state for pickup and drop
 
 ### Priority 3
 
-- prepare hooks for real map integration
-- prepare hooks for live fare APIs
-- prepare hooks for payment, dispatch, and email confirmation
+- prepare hooks for payment integration
+- prepare hooks for dispatch logic
+- prepare hooks for email or SMS confirmations
 
 ## Summary
 
-This project is no longer just a concept plan. It is now a multi-page front-end structure with:
-
-- a custom landing page
-- separate navigation pages
-- a shared layout system
-- a consistent premium dark theme
-- room for future real booking integrations
-
-The next work should focus on polishing the separate pages, replacing the placeholder logo, and cleaning up leftover code from the earlier home-page booking flow.
+This project is now a focused multi-page front-end with a real booking-first home page, Google-map-ready architecture, automatic summary switching, shared layout rendering, and room for future production integrations.

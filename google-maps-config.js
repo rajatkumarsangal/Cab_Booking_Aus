@@ -4,5 +4,6 @@ window.ROUTEWAVE_GOOGLE_MAPS_CONFIG = {
   region: "AU",
   country: "au",
   mapMode: "driving",
-  mapId: ""
+  mapId: "",
+  autoUseGoogleRouteSummary: true
 };
