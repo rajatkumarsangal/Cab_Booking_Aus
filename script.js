@@ -98,13 +98,8 @@ const fareModeButtons = document.querySelectorAll("[data-fare-mode]");
 const vehicleInputs = document.querySelectorAll('input[name="vehicle"]');
 const paymentInputs = document.querySelectorAll('input[name="payment"]');
 const tagButtons = document.querySelectorAll("[data-preset]");
-const mockMapStage = document.getElementById("mock-map-stage");
-const pickupMarker = document.getElementById("pickup-marker");
-const dropMarker = document.getElementById("drop-marker");
-const pickupMapCard = document.getElementById("pickup-map-card");
-const dropMapCard = document.getElementById("drop-map-card");
-const pickupMapLabel = document.getElementById("pickup-map-label");
-const dropMapLabel = document.getElementById("drop-map-label");
+const googleMapFrame = document.getElementById("google-map-frame");
+const googleMapStage = document.getElementById("google-map-stage");
 const routeMapStatus = document.getElementById("route-map-status");
 
 const continueToDetails = document.getElementById("continue-to-details");
@@ -113,19 +108,7 @@ const returnStepOne = document.getElementById("return-step-one");
 const confirmBooking = document.getElementById("confirm-booking");
 const bookAnother = document.getElementById("book-another");
 
-const mockLocations = {
-  "brisbane airport terminal": { x: 72, y: 26 },
-  "riverside towers, brisbane": { x: 55, y: 52 },
-  "harbour view hotel": { x: 37, y: 36 },
-  "convention centre": { x: 44, y: 68 },
-  "central business district": { x: 51, y: 42 },
-  "north wharf offices": { x: 64, y: 61 },
-  "city arena entrance": { x: 33, y: 54 },
-  "parkside apartments": { x: 79, y: 70 },
-  "south bank station": { x: 46, y: 58 },
-  "queen street mall": { x: 58, y: 39 },
-  "fortitude valley": { x: 69, y: 45 }
-};
+const defaultMapSource = "https://maps.google.com/maps?q=Brisbane%20Australia&z=12&output=embed";
 
 function setDefaultSchedule() {
   const future = new Date(Date.now() + 90 * 60 * 1000);
@@ -420,30 +403,8 @@ function generateReference() {
   return `RW-${stamp}`;
 }
 
-function getMockLocationPoint(value, fallbackIndex) {
-  const key = value.trim().toLowerCase();
-  if (mockLocations[key]) {
-    return mockLocations[key];
-  }
-
-  const seed = key.split("").reduce((total, char) => total + char.charCodeAt(0), 0);
-  return {
-    x: 26 + ((seed + fallbackIndex * 17) % 58),
-    y: 24 + ((seed + fallbackIndex * 23) % 54)
-  };
-}
-
-function positionMapElement(element, point) {
-  if (!element) {
-    return;
-  }
-
-  element.style.left = `${point.x}%`;
-  element.style.top = `${point.y}%`;
-}
-
-function highlightMockRoute() {
-  if (!mockMapStage || !quickPickup || !quickDestination) {
+function updateGoogleMapRoute() {
+  if (!googleMapFrame || !quickPickup || !quickDestination) {
     return;
   }
 
@@ -451,25 +412,22 @@ function highlightMockRoute() {
   const destination = quickDestination.value.trim();
 
   if (!pickup || !destination) {
-    mockMapStage.classList.remove("has-route");
-    setText(pickupMapLabel, "Choose pickup");
-    setText(dropMapLabel, "Choose drop");
-    setText(routeMapStatus, "Search to highlight route");
+    googleMapFrame.src = defaultMapSource;
+    if (googleMapStage) {
+      googleMapStage.classList.remove("has-route");
+    }
+    setText(routeMapStatus, "Search to load Google map route");
     return;
   }
 
-  const pickupPoint = getMockLocationPoint(pickup, 1);
-  const dropPoint = getMockLocationPoint(destination, 2);
+  const pickupQuery = encodeURIComponent(pickup);
+  const destinationQuery = encodeURIComponent(destination);
 
-  positionMapElement(pickupMarker, pickupPoint);
-  positionMapElement(dropMarker, dropPoint);
-  positionMapElement(pickupMapCard, pickupPoint);
-  positionMapElement(dropMapCard, dropPoint);
-
-  setText(pickupMapLabel, pickup.split(",")[0]);
-  setText(dropMapLabel, destination.split(",")[0]);
-  setText(routeMapStatus, "Pickup and drop highlighted");
-  mockMapStage.classList.add("has-route");
+  googleMapFrame.src = `https://maps.google.com/maps?saddr=${pickupQuery}&daddr=${destinationQuery}&output=embed`;
+  if (googleMapStage) {
+    googleMapStage.classList.add("has-route");
+  }
+  setText(routeMapStatus, "Google map route loaded");
 }
 
 function updateConfirmation() {
@@ -622,13 +580,13 @@ tagButtons.forEach((button) => {
 
 heroSearch.addEventListener("click", () => {
   if (!validateRouteFields(heroError)) {
-    highlightMockRoute();
+    updateGoogleMapRoute();
     return;
   }
 
   syncRouteToDetails();
   calculateTrip();
-  highlightMockRoute();
+  updateGoogleMapRoute();
   setStep(2);
   revealBookingResults();
 });
@@ -723,5 +681,5 @@ updateVehicleSummary();
 updatePaymentSummary();
 calculateTrip();
 updateDriverNotesCount();
-highlightMockRoute();
+updateGoogleMapRoute();
 setStep(2);

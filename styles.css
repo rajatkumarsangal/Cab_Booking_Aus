@@ -883,6 +883,15 @@ button {
   overflow: hidden;
 }
 
+.google-map-stage iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  filter: saturate(0.9) contrast(1.02);
+}
+
 .map-grid,
 .map-route,
 .map-pin,
@@ -2606,6 +2615,15 @@ button {
     linear-gradient(18deg, transparent 0 38%, rgba(255, 255, 255, 0.045) 38.4% 40.2%, transparent 40.6% 100%),
     linear-gradient(146deg, transparent 0 44%, rgba(255, 255, 255, 0.04) 44.3% 46%, transparent 46.4% 100%);
   opacity: 0.85;
+}
+
+.google-map-stage::before {
+  display: none;
+}
+
+.google-map-stage .map-bubble {
+  z-index: 3;
+  pointer-events: none;
 }
 
 .map-road {

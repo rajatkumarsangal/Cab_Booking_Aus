@@ -84,26 +84,15 @@
             <p class="panel-message hero-message" id="hero-error" hidden></p>
           </div>
 
-          <div class="map-stage" id="mock-map-stage" aria-label="Mock Google map route preview">
-            <div class="map-grid"></div>
-            <div class="google-map-label">Google map preview</div>
-            <div class="map-road road-one"></div>
-            <div class="map-road road-two"></div>
-            <div class="map-road road-three"></div>
-            <div class="map-route route-a" id="mock-route-primary"></div>
-            <div class="map-route route-b" id="mock-route-secondary"></div>
-            <div class="map-pin pin-a" id="pickup-marker"></div>
-            <div class="map-pin pin-b" id="drop-marker"></div>
-            <div class="map-location-card pickup-card" id="pickup-map-card">
-              <span>Pickup</span>
-              <strong id="pickup-map-label">Choose pickup</strong>
-            </div>
-            <div class="map-location-card drop-card" id="drop-map-card">
-              <span>Drop</span>
-              <strong id="drop-map-label">Choose drop</strong>
-            </div>
-            <div class="map-bubble bubble-logo">Live city map</div>
-            <div class="map-bubble bubble-perth" id="route-map-status">Search to highlight route</div>
+          <div class="map-stage google-map-stage" id="google-map-stage" aria-label="Google map route preview">
+            <iframe
+              id="google-map-frame"
+              title="Google map route preview"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              src="https://maps.google.com/maps?q=Brisbane%20Australia&z=12&output=embed"
+            ></iframe>
+            <div class="map-bubble bubble-perth" id="route-map-status">Search to load Google map route</div>
           </div>
         </div>
 
