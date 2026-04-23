@@ -38,13 +38,7 @@ function renderHeader() {
     <header class="site-header">
       <div class="site-header-inner">
         <a class="header-brand" href="index.html" aria-label="RouteWave home">
-          <span class="header-logo" aria-hidden="true">
-            <span class="header-logo-core"></span>
-            <span class="header-logo-orbit orbit-a"></span>
-            <span class="header-logo-orbit orbit-b"></span>
-            <span class="header-logo-path"></span>
-            <span class="header-logo-dot"></span>
-          </span>
+          <img class="header-logo" src="assets/dummy-logo.svg" alt="RouteWave logo">
           <span class="sr-only">RouteWave home</span>
         </a>
 
@@ -73,13 +67,7 @@ function renderFooter() {
       <div class="site-footer-inner">
         <div class="footer-brand-block">
           <a class="footer-brand" href="index.html" aria-label="RouteWave home">
-            <span class="header-logo footer-logo" aria-hidden="true">
-              <span class="header-logo-core"></span>
-              <span class="header-logo-orbit orbit-a"></span>
-              <span class="header-logo-orbit orbit-b"></span>
-              <span class="header-logo-path"></span>
-              <span class="header-logo-dot"></span>
-            </span>
+            <img class="header-logo footer-logo" src="assets/dummy-logo.svg" alt="RouteWave logo">
             <span class="footer-brand-copy">
               <strong>RouteWave</strong>
               <span>Modern taxi booking interface concept with a premium city-travel feel.</span>
