@@ -7,10 +7,6 @@ const sitePages = {
     nav: "fare",
     title: "Fare estimate"
   },
-  company: {
-    nav: "company",
-    title: "Company website"
-  },
   contact: {
     nav: "contact",
     title: "Contact us"
@@ -59,7 +55,6 @@ function renderHeader() {
         <nav class="header-nav" aria-label="Primary navigation">
           ${navLink("Fare estimate", "fare-estimate.html", page.nav === "fare")}
           ${navLink("Book a taxi", "index.html", page.nav === "book")}
-          ${navLink("Company website", "company-website.html", page.nav === "company")}
           ${navLink("Contact us", "contact-us.html", page.nav === "contact")}
         </nav>
 
@@ -106,17 +101,17 @@ function renderFooter() {
           </div>
 
           <div class="footer-column">
-            <span class="footer-title">Company</span>
-            <a href="company-website.html">Company website</a>
-            <a href="company-website.html#drive">Become a driver</a>
-            <a href="company-website.html#app">App download</a>
+            <span class="footer-title">Explore</span>
+            <a href="index.html#download">App download</a>
+            <a href="index.html#partners">Become a driver</a>
+            <a href="contact-us.html">Business enquiries</a>
           </div>
 
           <div class="footer-column">
             <span class="footer-title">Support</span>
             <a href="contact-us.html">Contact us</a>
             <a href="login.html">Log in</a>
-            <a href="company-website.html#offers">Current offers</a>
+            <a href="index.html#partners">Current offers</a>
           </div>
         </div>
       </div>

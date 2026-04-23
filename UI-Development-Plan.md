@@ -11,7 +11,7 @@ The project started as a planning document, but it now also serves as a simple r
 - Build a modern cab booking interface using plain `HTML`, `CSS`, and `JavaScript`
 - Use the reference website only for flow inspiration, not for visual copying
 - Keep the UI attractive, premium, and clearly different from the reference
-- Support direct navigation across separate pages instead of keeping everything on one long page
+- Support direct navigation across the remaining pages while keeping app, offers, and driver content on the home page
 
 ## Current Product Structure
 
@@ -25,7 +25,7 @@ Current purpose:
 - show the sketch-inspired booking hero
 - provide pickup and drop search inputs
 - direct users into the booking journey
-- promote supporting areas like offers, app download, and driver onboarding
+- promote supporting areas like offers, app download, and driver onboarding on the same page
 
 Current sections on the page:
 - shared header
@@ -51,16 +51,7 @@ Current purpose:
 Related script:
 - `fare-estimate.js`
 
-### 3. Company Page
-
-File:
-- `company-website.html`
-
-Current purpose:
-- present company-style content
-- provide space for driver recruitment, app promotion, and offers
-
-### 4. Contact Page
+### 3. Contact Page
 
 File:
 - `contact-us.html`
@@ -68,7 +59,7 @@ File:
 Current purpose:
 - provide support and contact information
 
-### 5. Authentication Pages
+### 4. Authentication Pages
 
 Files:
 - `login.html`
@@ -103,7 +94,6 @@ Each page also sets a page key using:
 
 - `data-page="home"`
 - `data-page="fare"`
-- `data-page="company"`
 - `data-page="contact"`
 - `data-page="login"`
 - `data-page="signup"`
@@ -128,7 +118,7 @@ The footer is now shared across all pages through `layout.js`.
 
 Current purpose:
 - keep the site visually consistent
-- provide quick links across booking, company, and support pages
+- provide quick links across booking, app/download anchors, partner anchors, and support pages
 - avoid missing footer sections on individual pages
 
 ## Visual Theme
@@ -153,14 +143,13 @@ That direction has now been simplified.
 Current reality:
 - `index.html` is focused more on landing experience and entry into the booking flow
 - the earlier booking studio sections were removed from the home page
-- navigation now opens separate pages instead of switching within the same page
+- navigation now opens separate pages for booking, fares, support, and auth while using home-page anchors for app, offer, and driver content
 - shared header and footer are now centralized through `layout.js`
 
 ## Current Front-End Files
 
 - `index.html`
 - `fare-estimate.html`
-- `company-website.html`
 - `contact-us.html`
 - `login.html`
 - `signup.html`
@@ -180,7 +169,7 @@ Current reality:
 ### Priority 2
 
 - refine the fare estimate page UI to match the landing-page polish
-- improve the company and contact pages with richer content blocks
+- improve the contact page and home-page partner sections with richer content blocks
 - add stronger mobile refinements across all screens
 
 ### Priority 3
