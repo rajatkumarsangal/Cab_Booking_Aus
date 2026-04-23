@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RouteWave | Fare Estimate</title>
+  <meta
+    name="description"
+    content="Estimate your cab fare before booking with RouteWave."
+  >
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="fare">
+  <div class="page-glow glow-left" aria-hidden="true"></div>
+  <div class="page-glow glow-right" aria-hidden="true"></div>
+
+  <div id="site-header-root"></div>
+
+  <main class="subpage-main">
+    <section class="subpage-hero">
+      <p class="eyebrow">Transparent pricing</p>
+      <h1 class="subpage-title">Check the fare before you book the ride.</h1>
+      <p class="subpage-lead">
+        This page now opens separately from the navigation and gives you a dedicated fare estimate experience
+        instead of taking you to another section on the same screen.
+      </p>
+
+      <div class="page-chip-row">
+        <span class="page-chip">Separate page navigation</span>
+        <span class="page-chip">Service-based pricing</span>
+        <span class="page-chip">Ready for live map integration later</span>
+      </div>
+    </section>
+
+    <section class="subpage-section">
+      <div class="estimate-layout">
+        <div class="page-panel">
+          <h2>Fare estimate</h2>
+          <p>Enter the route and service details below to preview distance, travel time, and estimated fare.</p>
+
+          <div class="estimate-form-grid">
+            <label class="field">
+              <span>Pickup</span>
+              <input id="estimate-pickup" type="text" placeholder="Enter pickup address">
+            </label>
+
+            <label class="field">
+              <span>Destination</span>
+              <input id="estimate-destination" type="text" placeholder="Enter destination">
+            </label>
+
+            <label class="field">
+              <span>Vehicle type</span>
+              <select id="estimate-vehicle">
+                <option value="metro">Metro</option>
+                <option value="executive">Executive</option>
+                <option value="maxi">Maxi</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Trip mode</span>
+              <select id="estimate-mode">
+                <option value="now">Book now</option>
+                <option value="later">Schedule later</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="page-cta-row">
+            <button class="button-primary" id="estimate-button" type="button">Calculate estimate</button>
+            <a class="button-secondary" href="index.html">Go to booking page</a>
+          </div>
+
+          <p class="panel-message" id="estimate-error" hidden></p>
+        </div>
+
+        <aside class="page-panel estimate-summary">
+          <div class="summary-highlight">
+            <span>Estimated fare</span>
+            <strong id="estimate-fare">AUD 0</strong>
+          </div>
+
+          <div class="estimate-metrics">
+            <div>
+              <span>Route</span>
+              <strong id="estimate-route">Waiting for addresses</strong>
+            </div>
+            <div>
+              <span>Distance</span>
+              <strong id="estimate-distance">-- km</strong>
+            </div>
+            <div>
+              <span>Travel time</span>
+              <strong id="estimate-duration">-- min</strong>
+            </div>
+            <div>
+              <span>Fare note</span>
+              <strong id="estimate-note">Estimate updates after you enter the route.</strong>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer-root"></div>
+  <script src="layout.js"></script>
+  <script src="fare-estimate.js"></script>
+</body>
+</html>

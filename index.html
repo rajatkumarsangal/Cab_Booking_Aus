@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RouteWave | Cab Booking Experience</title>
+  <meta
+    name="description"
+    content="A polished cab booking HTML experience with quick booking, trip details, and confirmation flow."
+  >
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="home">
+  <div class="page-glow glow-left" aria-hidden="true"></div>
+  <div class="page-glow glow-right" aria-hidden="true"></div>
+
+  <div id="site-header-root"></div>
+
+  <main>
+    <section class="sketch-hero" id="home">
+      <p class="eyebrow">Sketch-led landing layout</p>
+      <div class="sketch-frame">
+        <div class="sketch-frame-head">
+          <div class="frame-chip-row">
+            <span class="frame-chip">Pickup ready</span>
+            <span class="frame-chip">Map layout</span>
+            <span class="frame-chip">Live booking</span>
+          </div>
+          <div class="frame-chip-row frame-chip-row-right">
+            <span class="frame-chip frame-chip-accent">Book a taxi</span>
+          </div>
+        </div>
+
+        <div class="sketch-body">
+          <div class="sketch-form-shell">
+            <p class="sketch-lead">Book a ride with pickup and drop search directly over the route map.</p>
+
+            <div class="hero-input-cluster">
+              <label class="hero-field">
+                <span>Pickup</span>
+                <input
+                  id="quick-pickup"
+                  type="text"
+                  placeholder="Enter pickup address"
+                  autocomplete="street-address"
+                  list="pickup-options"
+                >
+              </label>
+
+              <label class="hero-field">
+                <span>Drop</span>
+                <input
+                  id="quick-destination"
+                  type="text"
+                  placeholder="Enter destination"
+                  autocomplete="street-address"
+                  list="drop-options"
+                >
+              </label>
+
+              <button class="hero-search-button" id="hero-search" type="button" aria-label="Search route">
+                <span class="search-icon" aria-hidden="true"></span>
+              </button>
+            </div>
+
+            <datalist id="pickup-options">
+              <option value="Brisbane Airport Terminal"></option>
+              <option value="Riverside Towers, Brisbane"></option>
+              <option value="Harbour View Hotel"></option>
+              <option value="Central Business District"></option>
+              <option value="City Arena Entrance"></option>
+              <option value="South Bank Station"></option>
+            </datalist>
+
+            <datalist id="drop-options">
+              <option value="Riverside Towers, Brisbane"></option>
+              <option value="Convention Centre"></option>
+              <option value="North Wharf Offices"></option>
+              <option value="Parkside Apartments"></option>
+              <option value="Queen Street Mall"></option>
+              <option value="Fortitude Valley"></option>
+            </datalist>
+
+            <p class="panel-message hero-message" id="hero-error" hidden></p>
+          </div>
+
+          <div class="map-stage" id="mock-map-stage" aria-label="Mock Google map route preview">
+            <div class="map-grid"></div>
+            <div class="google-map-label">Google map preview</div>
+            <div class="map-road road-one"></div>
+            <div class="map-road road-two"></div>
+            <div class="map-road road-three"></div>
+            <div class="map-route route-a" id="mock-route-primary"></div>
+            <div class="map-route route-b" id="mock-route-secondary"></div>
+            <div class="map-pin pin-a" id="pickup-marker"></div>
+            <div class="map-pin pin-b" id="drop-marker"></div>
+            <div class="map-location-card pickup-card" id="pickup-map-card">
+              <span>Pickup</span>
+              <strong id="pickup-map-label">Choose pickup</strong>
+            </div>
+            <div class="map-location-card drop-card" id="drop-map-card">
+              <span>Drop</span>
+              <strong id="drop-map-label">Choose drop</strong>
+            </div>
+            <div class="map-bubble bubble-logo">Live city map</div>
+            <div class="map-bubble bubble-perth" id="route-map-status">Search to highlight route</div>
+          </div>
+        </div>
+
+        <div class="frame-bottom-strip">
+          <a class="bottom-strip-item" href="company-website.html#offers">
+            <span>Promotion</span>
+            <strong>New ride offers</strong>
+          </a>
+          <a class="bottom-strip-item" href="company-website.html#drive">
+            <span>Become a Driver</span>
+            <strong>Join the fleet</strong>
+          </a>
+          <a class="bottom-strip-item" href="company-website.html#app">
+            <span>App Download</span>
+            <strong>Track and manage rides</strong>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="benefits" id="benefits">
+      <div class="section-heading">
+        <p class="eyebrow">Why this UI works</p>
+        <h2>Designed around clarity, speed, and conversion.</h2>
+      </div>
+
+      <div class="benefit-grid">
+        <article class="benefit-card">
+          <strong>Quick entry</strong>
+          <p>The first screen keeps the route setup simple so users can start fast without feeling overloaded.</p>
+        </article>
+        <article class="benefit-card">
+          <strong>Visible pricing</strong>
+          <p>Fare mode, live summary, and service choice stay visible while the user completes the booking.</p>
+        </article>
+        <article class="benefit-card">
+          <strong>Future-ready</strong>
+          <p>The layout leaves clear places for maps, payment, dispatch, and confirmation messaging.</p>
+        </article>
+        <article class="benefit-card">
+          <strong>Mobile friendly</strong>
+          <p>The card structure stacks neatly on smaller screens without losing the visual impact.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="app-showcase" id="download">
+      <div class="app-copy">
+        <p class="eyebrow">Mobile handoff</p>
+        <h2>Promote the app without interrupting the booking flow.</h2>
+        <p>
+          This supporting section gives you space for app downloads, rider benefits, and feature highlights
+          while keeping the booking form as the main conversion point.
+        </p>
+
+        <div class="app-points">
+          <div>
+            <strong>Track the driver</strong>
+            <span>Use this for live vehicle updates later.</span>
+          </div>
+          <div>
+            <strong>Edit the ride</strong>
+            <span>Ideal for scheduled bookings and trip changes.</span>
+          </div>
+          <div>
+            <strong>Receive alerts</strong>
+            <span>Prepared for email and SMS notifications.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="phone-mockup" aria-hidden="true">
+        <div class="phone-shell">
+          <div class="phone-top"></div>
+          <div class="phone-screen">
+            <div class="mockup-map"></div>
+            <div class="mockup-card primary">
+              <span>Driver arriving</span>
+              <strong>4 min away</strong>
+            </div>
+            <div class="mockup-card secondary">
+              <span>Next stop</span>
+              <strong>Riverside Towers</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="partner-strip" id="partners">
+      <article class="partner-card">
+        <p class="eyebrow">Become a driver</p>
+        <h3>Add a recruitment CTA without cluttering the booking flow.</h3>
+        <p>Perfect for promoting driver partnerships, onboarding, and support links from the landing page.</p>
+        <a class="inline-link" href="#home">View opportunities</a>
+      </article>
+
+      <article class="partner-card accent-card">
+        <p class="eyebrow">Promotions</p>
+        <h3>Highlight offers, airport bundles, or business account benefits.</h3>
+        <p>Use this block for launch promotions, first-ride offers, or repeat customer benefits.</p>
+        <a class="inline-link" href="#home">See current offers</a>
+      </article>
+    </section>
+  </main>
+
+  <div id="site-footer-root"></div>
+  <script src="layout.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
