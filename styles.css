@@ -21,7 +21,7 @@
   --radius-lg: 24px;
   --radius-md: 18px;
   --radius-sm: 14px;
-  --content-width: 1200px;
+  --content-width: 1320px;
 }
 
 *,
@@ -71,7 +71,7 @@ button {
   position: relative;
   z-index: 30;
   width: 100%;
-  padding: 1rem 1.5rem 0;
+  padding: 1rem 1rem 0;
   background: transparent;
 }
 
@@ -608,8 +608,8 @@ button {
 .site-footer {
   max-width: var(--content-width);
   margin: 0 auto;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .hero {
@@ -2201,8 +2201,8 @@ button {
 .site-footer {
   max-width: var(--content-width);
   margin: 0 auto 2rem;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .site-footer-inner,
