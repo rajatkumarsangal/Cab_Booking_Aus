@@ -38,20 +38,7 @@ Current sections on the page:
 Important note:
 - the earlier multi-step booking studio that was originally planned on the home page has been removed from `index.html`
 
-### 2. Fare Estimate Page
-
-File:
-- `fare-estimate.html`
-
-Current purpose:
-- give users a separate page to estimate ride pricing
-- allow pickup, destination, vehicle, and ride mode based calculation
-- keep pricing flow independent from the landing page layout
-
-Related script:
-- `fare-estimate.js`
-
-### 3. Contact Page
+### 2. Contact Page
 
 File:
 - `contact-us.html`
@@ -59,7 +46,7 @@ File:
 Current purpose:
 - provide support and contact information
 
-### 4. Authentication Pages
+### 3. Authentication Pages
 
 Files:
 - `login.html`
@@ -93,7 +80,6 @@ Each page includes:
 Each page also sets a page key using:
 
 - `data-page="home"`
-- `data-page="fare"`
 - `data-page="contact"`
 - `data-page="login"`
 - `data-page="signup"`
@@ -143,19 +129,17 @@ That direction has now been simplified.
 Current reality:
 - `index.html` is focused more on landing experience and entry into the booking flow
 - the earlier booking studio sections were removed from the home page
-- navigation now opens separate pages for booking, fares, support, and auth while using home-page anchors for app, offer, and driver content
+- navigation now opens separate pages for booking, support, and auth while using home-page anchors for app, offer, and driver content
 - shared header and footer are now centralized through `layout.js`
 
 ## Current Front-End Files
 
 - `index.html`
-- `fare-estimate.html`
 - `contact-us.html`
 - `login.html`
 - `signup.html`
 - `styles.css`
 - `script.js`
-- `fare-estimate.js`
 - `layout.js`
 
 ## Recommended Next Improvements
@@ -168,7 +152,6 @@ Current reality:
 
 ### Priority 2
 
-- refine the fare estimate page UI to match the landing-page polish
 - improve the contact page and home-page partner sections with richer content blocks
 - add stronger mobile refinements across all screens
 
