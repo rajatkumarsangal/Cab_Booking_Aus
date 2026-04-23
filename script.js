@@ -109,6 +109,144 @@ const confirmBooking = document.getElementById("confirm-booking");
 const bookAnother = document.getElementById("book-another");
 
 const defaultMapSource = "https://maps.google.com/maps?q=Brisbane%20Australia&z=12&output=embed";
+let googleMapsLoadPromise;
+
+function getGoogleMapsConfig() {
+  const baseConfig = window.ROUTEWAVE_GOOGLE_MAPS_CONFIG || {};
+  return {
+    apiKey: baseConfig.apiKey || "",
+    libraries: Array.isArray(baseConfig.libraries) && baseConfig.libraries.length ? baseConfig.libraries : ["places"],
+    region: baseConfig.region || "AU",
+    country: baseConfig.country || "au",
+    mapMode: baseConfig.mapMode || "driving",
+    mapId: baseConfig.mapId || ""
+  };
+}
+
+function getSelectedPlaceMeta(input) {
+  return {
+    lat: input ? input.dataset.placeLat || "" : "",
+    lng: input ? input.dataset.placeLng || "" : ""
+  };
+}
+
+function clearSelectedPlaceMeta(input) {
+  if (!input) {
+    return;
+  }
+
+  delete input.dataset.placeLat;
+  delete input.dataset.placeLng;
+  delete input.dataset.placeLabel;
+}
+
+function storeSelectedPlaceMeta(input, place) {
+  if (!input || !place || !place.geometry || !place.geometry.location) {
+    clearSelectedPlaceMeta(input);
+    return;
+  }
+
+  const lat = typeof place.geometry.location.lat === "function"
+    ? place.geometry.location.lat()
+    : place.geometry.location.lat;
+  const lng = typeof place.geometry.location.lng === "function"
+    ? place.geometry.location.lng()
+    : place.geometry.location.lng;
+
+  input.dataset.placeLat = String(lat);
+  input.dataset.placeLng = String(lng);
+  input.dataset.placeLabel = place.formatted_address || place.name || input.value.trim();
+}
+
+function loadGoogleMapsApi() {
+  const config = getGoogleMapsConfig();
+
+  if (window.google && window.google.maps && window.google.maps.places) {
+    return Promise.resolve(window.google.maps);
+  }
+
+  if (!config.apiKey) {
+    return Promise.reject(new Error("Missing Google Maps API key."));
+  }
+
+  if (googleMapsLoadPromise) {
+    return googleMapsLoadPromise;
+  }
+
+  googleMapsLoadPromise = new Promise((resolve, reject) => {
+    const existingScript = document.querySelector('script[data-google-maps-loader="true"]');
+    if (existingScript) {
+      existingScript.addEventListener("load", () => resolve(window.google.maps), { once: true });
+      existingScript.addEventListener("error", () => reject(new Error("Google Maps failed to load.")), { once: true });
+      return;
+    }
+
+    const script = document.createElement("script");
+    const params = new URLSearchParams({
+      key: config.apiKey,
+      libraries: config.libraries.join(","),
+      region: config.region,
+      loading: "async"
+    });
+
+    script.src = `https://maps.googleapis.com/maps/api/js?${params.toString()}`;
+    script.async = true;
+    script.defer = true;
+    script.dataset.googleMapsLoader = "true";
+    script.onload = () => {
+      if (window.google && window.google.maps && window.google.maps.places) {
+        resolve(window.google.maps);
+        return;
+      }
+
+      reject(new Error("Google Maps Places library not available."));
+    };
+    script.onerror = () => reject(new Error("Google Maps failed to load."));
+    document.head.appendChild(script);
+  });
+
+  return googleMapsLoadPromise;
+}
+
+function attachPlacesAutocomplete(input) {
+  if (!input || !window.google || !window.google.maps || !window.google.maps.places) {
+    return;
+  }
+
+  const config = getGoogleMapsConfig();
+  const autocomplete = new window.google.maps.places.Autocomplete(input, {
+    fields: ["formatted_address", "geometry", "name"],
+    componentRestrictions: config.country ? { country: config.country } : undefined
+  });
+
+  autocomplete.addListener("place_changed", () => {
+    const place = autocomplete.getPlace();
+
+    if (!place) {
+      return;
+    }
+
+    input.value = place.formatted_address || place.name || input.value;
+    storeSelectedPlaceMeta(input, place);
+    updateGoogleMapRoute();
+  });
+
+  input.addEventListener("input", () => {
+    clearSelectedPlaceMeta(input);
+  });
+}
+
+function initializeGoogleMapsAutocomplete() {
+  loadGoogleMapsApi()
+    .then(() => {
+      attachPlacesAutocomplete(quickPickup);
+      attachPlacesAutocomplete(quickDestination);
+      setText(routeMapStatus, "Google Places dropdown ready");
+    })
+    .catch(() => {
+      setText(routeMapStatus, "Google Places not configured yet");
+    });
+}
 
 function setDefaultSchedule() {
   const future = new Date(Date.now() + 90 * 60 * 1000);
@@ -408,8 +546,11 @@ function updateGoogleMapRoute() {
     return;
   }
 
+  const config = getGoogleMapsConfig();
   const pickup = quickPickup.value.trim();
   const destination = quickDestination.value.trim();
+  const pickupMeta = getSelectedPlaceMeta(quickPickup);
+  const destinationMeta = getSelectedPlaceMeta(quickDestination);
 
   if (!pickup || !destination) {
     googleMapFrame.src = defaultMapSource;
@@ -417,6 +558,18 @@ function updateGoogleMapRoute() {
       googleMapStage.classList.remove("has-route");
     }
     setText(routeMapStatus, "Search to load Google map route");
+    return;
+  }
+
+  if (config.apiKey && pickupMeta.lat && pickupMeta.lng && destinationMeta.lat && destinationMeta.lng) {
+    const origin = encodeURIComponent(`${pickupMeta.lat},${pickupMeta.lng}`);
+    const destinationCoords = encodeURIComponent(`${destinationMeta.lat},${destinationMeta.lng}`);
+    googleMapFrame.src =
+      `https://www.google.com/maps/embed/v1/directions?key=${encodeURIComponent(config.apiKey)}&origin=${origin}&destination=${destinationCoords}&mode=${encodeURIComponent(config.mapMode)}`;
+    if (googleMapStage) {
+      googleMapStage.classList.add("has-route");
+    }
+    setText(routeMapStatus, "Google map route loaded from selected places");
     return;
   }
 
@@ -682,4 +835,5 @@ updatePaymentSummary();
 calculateTrip();
 updateDriverNotesCount();
 updateGoogleMapRoute();
+initializeGoogleMapsAutocomplete();
 setStep(2);
