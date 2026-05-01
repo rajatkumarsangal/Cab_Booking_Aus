@@ -421,6 +421,14 @@ function populateTimeOptions() {
       detailTime.appendChild(option);
     }
   }
+
+  // Set default time to next 15-minute interval
+  const now = new Date();
+  now.setMinutes(Math.ceil(now.getMinutes() / 15) * 15, 0, 0);
+  const defaultHours = String(now.getHours()).padStart(2, "0");
+  const defaultMinutes = String(now.getMinutes()).padStart(2, "0");
+  const defaultTime = `${defaultHours}:${defaultMinutes}`;
+  detailTime.value = defaultTime;
 }
 
 function setStep(nextStep) {
