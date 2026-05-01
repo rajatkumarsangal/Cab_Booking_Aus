@@ -113,8 +113,18 @@
       </div>
     </section>
 
-    <section class="booking-results" id="booking-results" hidden>
+    <section class="booking-results" id="booking-results" role="dialog" aria-modal="true" aria-labelledby="booking-popup-title" hidden>
       <div class="booking-results-layout">
+        <div class="booking-popup-header">
+          <div>
+            <span class="step-label">Booking details</span>
+            <h2 id="booking-popup-title">Complete your taxi booking</h2>
+          </div>
+          <button class="booking-popup-close" id="booking-popup-close" type="button" aria-label="Close booking popup">
+            <span aria-hidden="true"></span>
+          </button>
+        </div>
+
         <div class="booking-results-main">
           <section class="booking-result-section fare-mode-section" aria-labelledby="fare-mode-title">
             <div class="section-inline-header">
@@ -246,6 +256,18 @@
                 <span>Contact number</span>
                 <input id="passenger-phone" type="tel" placeholder="Contact number" autocomplete="tel">
               </label>
+
+              <div class="otp-panel field-full-width" id="otp-panel">
+                <div class="otp-actions">
+                  <label class="result-field otp-code-field">
+                    <span>OTP verification</span>
+                    <input id="otp-code" type="text" inputmode="numeric" maxlength="6" placeholder="Enter 6-digit OTP" autocomplete="one-time-code">
+                  </label>
+                  <button class="button-secondary otp-send-button" id="send-otp" type="button">Send OTP</button>
+                  <button class="button-primary otp-verify-button" id="verify-otp" type="button">Verify</button>
+                </div>
+                <p class="otp-status" id="otp-status">Verify the contact number before requesting the booking.</p>
+              </div>
             </div>
           </section>
 

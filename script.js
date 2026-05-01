@@ -3,7 +3,10 @@ const state = {
   tripMode: "now",
   fareMode: "fixed",
   vehicle: "next",
-  payment: ""
+  payment: "",
+  otpCode: "",
+  otpPhone: "",
+  otpVerified: false
 };
 
 const siteAdminConfig = window.WizzCabsConfig ? window.WizzCabsConfig.load() : null;
@@ -37,6 +40,10 @@ const detailDate = document.getElementById("detail-date");
 const detailTime = document.getElementById("detail-time");
 const passengerName = document.getElementById("passenger-name");
 const passengerPhone = document.getElementById("passenger-phone");
+const otpCode = document.getElementById("otp-code");
+const sendOtp = document.getElementById("send-otp");
+const verifyOtp = document.getElementById("verify-otp");
+const otpStatus = document.getElementById("otp-status");
 const pickupNotes = document.getElementById("pickup-notes");
 const schedulePanel = document.getElementById("schedule-panel");
 const detailScheduleRow = document.getElementById("detail-schedule-row");
@@ -59,6 +66,7 @@ const confirmationFare = document.getElementById("confirmation-fare");
 const stepRoutePickup = document.getElementById("step-route-pickup");
 const stepRouteDestination = document.getElementById("step-route-destination");
 const bookingResults = document.getElementById("booking-results");
+const bookingPopupClose = document.getElementById("booking-popup-close");
 const requestBooking = document.getElementById("request-booking");
 const paymentMethod = document.getElementById("payment-method");
 const driverNotesCount = document.getElementById("driver-notes-count");
@@ -432,6 +440,88 @@ function setText(element, value) {
   element.textContent = value;
 }
 
+function setOtpStatus(message, type) {
+  if (!otpStatus) {
+    return;
+  }
+
+  otpStatus.textContent = message;
+  otpStatus.dataset.status = type || "default";
+}
+
+function resetOtpVerification(message) {
+  state.otpCode = "";
+  state.otpPhone = "";
+  state.otpVerified = false;
+
+  if (otpCode) {
+    otpCode.value = "";
+  }
+
+  setOtpStatus(message || "Verify the contact number before requesting the booking.", "default");
+}
+
+function getCleanPhone() {
+  return passengerPhone ? passengerPhone.value.replace(/\D/g, "") : "";
+}
+
+function generateOtpCode() {
+  return String(Math.floor(100000 + Math.random() * 900000));
+}
+
+function sendOtpCode() {
+  const phoneDigits = getCleanPhone();
+
+  if (!phoneDigits) {
+    setOtpStatus("Enter a contact number before sending OTP.", "error");
+    showMessage(detailError, "Please enter contact number.");
+    return;
+  }
+
+  if (phoneDigits.length < 8) {
+    setOtpStatus("Enter a valid contact number before sending OTP.", "error");
+    showMessage(detailError, "Please enter a valid contact number.");
+    return;
+  }
+
+  state.otpCode = generateOtpCode();
+  state.otpPhone = phoneDigits;
+  state.otpVerified = false;
+
+  if (otpCode) {
+    otpCode.value = "";
+    otpCode.focus();
+  }
+
+  showMessage(detailError, "");
+  setOtpStatus(`Demo OTP sent: ${state.otpCode}`, "sent");
+}
+
+function verifyOtpCode() {
+  const enteredCode = otpCode ? otpCode.value.trim() : "";
+
+  if (!state.otpCode) {
+    setOtpStatus("Send OTP first.", "error");
+    return false;
+  }
+
+  if (getCleanPhone() !== state.otpPhone) {
+    resetOtpVerification("Contact number changed. Send OTP again.");
+    return false;
+  }
+
+  if (enteredCode !== state.otpCode) {
+    state.otpVerified = false;
+    setOtpStatus("Incorrect OTP. Please check and try again.", "error");
+    return false;
+  }
+
+  state.otpVerified = true;
+  setOtpStatus("Contact number verified.", "verified");
+  showMessage(detailError, "");
+  return true;
+}
+
 function syncRouteToDetails() {
   if (detailPickup) {
     detailPickup.value = quickPickup.value.trim();
@@ -617,6 +707,18 @@ function validateStepTwo() {
     return false;
   }
 
+  if (passengerPhone && !state.otpVerified) {
+    showMessage(detailError, "Please verify the contact number with OTP.");
+    setOtpStatus(state.otpCode ? "Enter and verify the OTP before requesting the booking." : "Send OTP to verify the contact number.", "error");
+    return false;
+  }
+
+  if (passengerPhone && state.otpVerified && getCleanPhone() !== state.otpPhone) {
+    resetOtpVerification("Contact number changed. Send OTP again.");
+    showMessage(detailError, "Please verify the updated contact number.");
+    return false;
+  }
+
   if (!state.payment) {
     showMessage(detailError, "Please select a payment method.");
     return false;
@@ -689,7 +791,16 @@ function revealBookingResults() {
   }
 
   bookingResults.hidden = false;
-  bookingResults.scrollIntoView({ behavior: "smooth", block: "start" });
+  document.body.classList.add("is-booking-popup-open");
+}
+
+function closeBookingResults() {
+  if (!bookingResults) {
+    return;
+  }
+
+  bookingResults.hidden = true;
+  document.body.classList.remove("is-booking-popup-open");
 }
 
 function updateDriverNotesCount() {
@@ -706,6 +817,9 @@ function resetFlow() {
   state.fareMode = "fixed";
   state.vehicle = defaultVehicleId;
   state.payment = "";
+  state.otpCode = "";
+  state.otpPhone = "";
+  state.otpVerified = false;
 
   const bookingForm = document.getElementById("booking-form");
   if (bookingForm) {
@@ -733,6 +847,7 @@ function resetFlow() {
   updateFareModeUI();
   updateVehicleSummary();
   updatePaymentSummary();
+  resetOtpVerification();
   showMessage(heroError, "");
   showMessage(quickError, "");
   showMessage(detailError, "");
@@ -778,6 +893,31 @@ if (pickupNotes) {
   pickupNotes.addEventListener("input", updateDriverNotesCount);
 }
 
+if (sendOtp) {
+  sendOtp.addEventListener("click", sendOtpCode);
+}
+
+if (verifyOtp) {
+  verifyOtp.addEventListener("click", verifyOtpCode);
+}
+
+if (otpCode) {
+  otpCode.addEventListener("input", () => {
+    otpCode.value = otpCode.value.replace(/\D/g, "").slice(0, 6);
+    if (!state.otpVerified && state.otpCode) {
+      setOtpStatus("OTP sent. Enter the 6-digit code to verify.", "sent");
+    }
+  });
+}
+
+if (passengerPhone) {
+  passengerPhone.addEventListener("input", () => {
+    if (state.otpPhone && getCleanPhone() !== state.otpPhone) {
+      resetOtpVerification("Contact number changed. Send OTP again.");
+    }
+  });
+}
+
 if (carsListToggle) {
   carsListToggle.addEventListener("click", () => {
     const carsListSection = carsListToggle.closest(".cars-list-section");
@@ -785,6 +925,24 @@ if (carsListToggle) {
     carsListToggle.setAttribute("aria-expanded", String(!isCollapsed));
   });
 }
+
+if (bookingPopupClose) {
+  bookingPopupClose.addEventListener("click", closeBookingResults);
+}
+
+if (bookingResults) {
+  bookingResults.addEventListener("click", (event) => {
+    if (event.target === bookingResults) {
+      closeBookingResults();
+    }
+  });
+}
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && bookingResults && !bookingResults.hidden) {
+    closeBookingResults();
+  }
+});
 
 [quickPickup, quickDestination, detailPickup, detailDestination, detailDate, detailTime].filter(Boolean).forEach((field) => {
   field.addEventListener("input", () => {
@@ -887,7 +1045,6 @@ if (requestBooking) {
 
     if (bookingConfirmation) {
       bookingConfirmation.hidden = false;
-      bookingConfirmation.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
   });
 }
