@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wizz Cabs | Vehicle Admin</title>
+  <script>
+    if (window.sessionStorage.getItem("wizzCabsAdminLoggedIn") !== "true") {
+      window.location.replace(new URL("login.html", window.location.href).href);
+    }
+  </script>
   <link rel="stylesheet" href="admin.css">
 </head>
 <body data-admin-page="vehicles">

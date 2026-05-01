@@ -1,9 +1,19 @@
 const ADMIN_SESSION_KEY = "wizzCabsAdminLoggedIn";
+const ADMIN_SIDEBAR_KEY = "wizzCabsAdminSidebarCollapsed";
 const ADMIN_USERNAME = "admin";
 const ADMIN_PASSWORD = "admin123";
 const page = document.body.dataset.adminPage || "dashboard";
 const config = window.WizzCabsConfig.load();
 let vehicleFolderHandle = null;
+const adminLoginUrl = new URL("login.html", window.location.href).href;
+const adminDashboardUrl = new URL("index.html", window.location.href).href;
+
+const adminNavItems = [
+  { key: "dashboard", label: "Dashboard", href: "index.html", icon: "dashboard" },
+  { key: "brand", label: "Brand", href: "brand.html", icon: "brand" },
+  { key: "fare", label: "Fare", href: "fare.html", icon: "fare" },
+  { key: "vehicles", label: "Vehicles", href: "vehicles.html", icon: "vehicles" }
+];
 
 function isLoggedIn() {
   return window.sessionStorage.getItem(ADMIN_SESSION_KEY) === "true";
@@ -11,7 +21,7 @@ function isLoggedIn() {
 
 function requireLogin() {
   if (page !== "login" && !isLoggedIn()) {
-    window.location.href = "login.html";
+    window.location.replace(adminLoginUrl);
     return false;
   }
 
@@ -22,8 +32,86 @@ function bindLogout() {
   document.querySelectorAll("[data-logout]").forEach((button) => {
     button.addEventListener("click", () => {
       window.sessionStorage.removeItem(ADMIN_SESSION_KEY);
-      window.location.href = "login.html";
+      window.localStorage.removeItem(ADMIN_SIDEBAR_KEY);
+      window.location.replace(adminLoginUrl);
     });
+  });
+}
+
+function createAdminNavLink(item) {
+  return `
+    <a class="admin-sidebar-link ${page === item.key ? "is-active" : ""}" href="${item.href}" title="${item.label}">
+      <span class="admin-sidebar-icon admin-sidebar-icon-${item.icon}" aria-hidden="true"></span>
+      <span class="admin-sidebar-label">${item.label}</span>
+    </a>
+  `;
+}
+
+function renderAdminSidebar() {
+  if (page === "login" || document.getElementById("admin-sidebar")) {
+    return;
+  }
+
+  document.body.classList.add("has-admin-sidebar");
+  document.body.insertAdjacentHTML("afterbegin", `
+    <button class="admin-menu-button" id="admin-menu-button" type="button" aria-label="Open menu" aria-controls="admin-sidebar">
+      <span></span>
+    </button>
+    <aside class="admin-sidebar" id="admin-sidebar" aria-label="Admin menu">
+      <div class="admin-sidebar-brand-row">
+        <a class="admin-sidebar-brand" href="index.html" aria-label="Wizz Cabs admin dashboard">
+          <span class="admin-sidebar-logo" aria-hidden="true">W</span>
+          <span class="admin-sidebar-brand-copy">
+            <strong>Wizz Cabs</strong>
+            <small>Admin Panel</small>
+          </span>
+        </a>
+        <button class="admin-sidebar-toggle" id="admin-sidebar-toggle" type="button" aria-label="Collapse menu" aria-controls="admin-sidebar" aria-expanded="true">
+          <span></span>
+        </button>
+      </div>
+
+      <nav class="admin-sidebar-menu" aria-label="Admin sections">
+        ${adminNavItems.map(createAdminNavLink).join("")}
+      </nav>
+
+      <div class="admin-sidebar-footer">
+        <a class="admin-sidebar-link" href="../index.html" title="View website">
+          <span class="admin-sidebar-icon admin-sidebar-icon-site" aria-hidden="true"></span>
+          <span class="admin-sidebar-label">View Website</span>
+        </a>
+        <button class="admin-sidebar-link admin-sidebar-logout" data-logout type="button" title="Log out">
+          <span class="admin-sidebar-icon admin-sidebar-icon-logout" aria-hidden="true"></span>
+          <span class="admin-sidebar-label">Log Out</span>
+        </button>
+      </div>
+    </aside>
+    <button class="admin-sidebar-scrim" id="admin-sidebar-scrim" type="button" aria-label="Close menu"></button>
+  `);
+
+  const toggle = document.getElementById("admin-sidebar-toggle");
+  const menuButton = document.getElementById("admin-menu-button");
+  const scrim = document.getElementById("admin-sidebar-scrim");
+
+  function setCollapsed(isCollapsed) {
+    document.body.classList.toggle("is-admin-sidebar-collapsed", isCollapsed);
+    toggle.setAttribute("aria-expanded", String(!isCollapsed));
+    toggle.setAttribute("aria-label", isCollapsed ? "Expand menu" : "Collapse menu");
+    window.localStorage.setItem(ADMIN_SIDEBAR_KEY, isCollapsed ? "true" : "false");
+  }
+
+  setCollapsed(window.localStorage.getItem(ADMIN_SIDEBAR_KEY) === "true");
+
+  toggle.addEventListener("click", () => {
+    setCollapsed(!document.body.classList.contains("is-admin-sidebar-collapsed"));
+  });
+
+  menuButton.addEventListener("click", () => {
+    document.body.classList.add("is-admin-sidebar-open");
+  });
+
+  scrim.addEventListener("click", () => {
+    document.body.classList.remove("is-admin-sidebar-open");
   });
 }
 
@@ -66,7 +154,7 @@ function bindLoginPage() {
   const message = document.getElementById("login-message");
 
   if (isLoggedIn()) {
-    window.location.href = "index.html";
+    window.location.replace(adminDashboardUrl);
     return;
   }
 
@@ -75,7 +163,7 @@ function bindLoginPage() {
 
     if (username.value.trim() === ADMIN_USERNAME && password.value === ADMIN_PASSWORD) {
       window.sessionStorage.setItem(ADMIN_SESSION_KEY, "true");
-      window.location.href = "index.html";
+      window.location.replace(adminDashboardUrl);
       return;
     }
 
@@ -298,6 +386,9 @@ function bindVehiclesPage() {
 }
 
 const canUseAdmin = requireLogin();
+if (canUseAdmin) {
+  renderAdminSidebar();
+}
 bindLogout();
 
 if (page === "login") {
