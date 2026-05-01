@@ -1,0 +1,375 @@
+:root {
+  --bg: #08131c;
+  --panel: #102332;
+  --panel-soft: #142b3d;
+  --text: #f7f3e9;
+  --muted: #b8c7d1;
+  --line: rgba(255, 255, 255, 0.1);
+  --accent: #ffbf2f;
+  --accent-dark: #111827;
+  --danger: #ff8c8c;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: "Aptos", "Trebuchet MS", sans-serif;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(20, 128, 117, 0.18), transparent 30%),
+    linear-gradient(180deg, #07111a, #0b1823 45%, #0f2231);
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+code {
+  color: var(--accent);
+}
+
+.admin-shell {
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 2rem 0 7rem;
+}
+
+.login-shell {
+  min-height: 100vh;
+  width: min(460px, calc(100% - 2rem));
+  margin: 0 auto;
+  display: grid;
+  align-items: center;
+  padding: 2rem 0;
+}
+
+.admin-hero,
+.panel,
+.notice,
+.sticky-actions,
+.login-panel,
+.admin-card {
+  border: 1px solid var(--line);
+  background: rgba(16, 35, 50, 0.92);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.25);
+}
+
+.admin-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.35rem;
+  border-radius: 1rem;
+}
+
+.admin-hero h1,
+.panel h2 {
+  margin: 0;
+  font-family: "Palatino Linotype", "Book Antiqua", serif;
+  letter-spacing: 0;
+}
+
+.admin-hero p,
+.notice,
+.folder-status,
+.sticky-actions p,
+.login-copy,
+.admin-card small {
+  color: var(--muted);
+}
+
+.eyebrow {
+  margin: 0 0 0.35rem;
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  align-items: center;
+}
+
+.primary-button,
+.ghost-button,
+.danger-button {
+  min-height: 2.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.7rem;
+  border: 1px solid transparent;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.primary-button {
+  color: #111827;
+  background: var(--accent);
+}
+
+.ghost-button {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--line);
+}
+
+.danger-button {
+  color: #2b1111;
+  background: var(--danger);
+}
+
+.notice {
+  margin: 1rem 0;
+  padding: 1rem;
+  border-radius: 0.85rem;
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.login-panel {
+  padding: 1.35rem;
+  border-radius: 1rem;
+}
+
+.login-panel h1 {
+  margin: 0;
+  font-family: "Palatino Linotype", "Book Antiqua", serif;
+}
+
+.login-form {
+  display: grid;
+  gap: 0.9rem;
+  margin-top: 1rem;
+}
+
+.form-message {
+  margin: 0;
+  color: var(--danger);
+  font-weight: 800;
+}
+
+.admin-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.admin-card {
+  display: grid;
+  gap: 0.5rem;
+  min-height: 12rem;
+  padding: 1.1rem;
+  border-radius: 1rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.admin-card:hover {
+  border-color: rgba(255, 191, 47, 0.55);
+  transform: translateY(-2px);
+}
+
+.admin-card span {
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.admin-card strong {
+  font-size: 1.35rem;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.panel {
+  padding: 1.15rem;
+  border-radius: 1rem;
+}
+
+.vehicle-panel {
+  margin-top: 1rem;
+}
+
+.single-panel {
+  margin-top: 1rem;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.logo-preview {
+  width: 5.5rem;
+  height: 4rem;
+  object-fit: contain;
+  border-radius: 0.6rem;
+  background: #f5f5f5;
+}
+
+.field,
+.toggle-field {
+  display: grid;
+  gap: 0.45rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  padding: 0.8rem;
+  color: var(--text);
+  background: rgba(7, 17, 26, 0.72);
+  outline: none;
+}
+
+.field input:focus,
+.field textarea:focus {
+  border-color: rgba(255, 191, 47, 0.85);
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.fare-preview {
+  display: grid;
+  gap: 0.2rem;
+  text-align: right;
+}
+
+.fare-preview span {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.fare-preview strong {
+  color: var(--accent);
+  font-size: 1.3rem;
+}
+
+.folder-status {
+  margin: -0.3rem 0 1rem;
+}
+
+.vehicle-list {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.vehicle-card {
+  display: grid;
+  grid-template-columns: 7rem 1fr auto;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  background: rgba(7, 17, 26, 0.48);
+}
+
+.vehicle-image {
+  width: 7rem;
+  height: 5rem;
+  object-fit: cover;
+  border-radius: 0.7rem;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.vehicle-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.vehicle-fields .wide {
+  grid-column: span 2;
+}
+
+.card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 8rem;
+}
+
+.file-input {
+  display: none;
+}
+
+.toggle-field {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+}
+
+.sticky-actions {
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  transform: translateX(-50%);
+  width: min(1180px, calc(100% - 2rem));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem;
+  border-radius: 0.9rem;
+}
+
+.sticky-actions p {
+  margin: 0;
+}
+
+@media (max-width: 860px) {
+  .admin-hero,
+  .panel-header,
+  .sticky-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-grid,
+  .admin-cards,
+  .field-grid,
+  .vehicle-card,
+  .vehicle-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .vehicle-fields .wide {
+    grid-column: auto;
+  }
+
+  .card-actions {
+    min-width: 0;
+  }
+}

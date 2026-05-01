@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wizz Cabs | Fare Admin</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body data-admin-page="fare">
+  <main class="admin-shell">
+    <header class="admin-hero">
+      <div>
+        <p class="eyebrow">Fare</p>
+        <h1>Fare Logic</h1>
+        <p>Manage the fare adjustments used by the booking estimate.</p>
+      </div>
+      <div class="hero-actions">
+        <a class="ghost-button" href="index.html">Dashboard</a>
+        <button class="danger-button" data-logout type="button">Log Out</button>
+      </div>
+    </header>
+
+    <section class="panel single-panel">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Settings</p>
+          <h2>Fare Rules</h2>
+        </div>
+        <div class="fare-preview">
+          <span>12 km preview</span>
+          <strong id="fare-preview">$ --</strong>
+        </div>
+      </div>
+
+      <div class="field-grid">
+        <label class="field">
+          <span>Fixed fare adjustment</span>
+          <input id="fixed-adjustment" type="number" step="0.1">
+        </label>
+        <label class="field">
+          <span>Estimate fare adjustment</span>
+          <input id="estimate-adjustment" type="number" step="0.1">
+        </label>
+        <label class="field">
+          <span>Scheduled surcharge</span>
+          <input id="scheduled-surcharge" type="number" step="0.1">
+        </label>
+        <label class="field">
+          <span>Minimum fare</span>
+          <input id="minimum-fare" type="number" step="0.1">
+        </label>
+      </div>
+    </section>
+
+    <footer class="sticky-actions">
+      <p id="save-status">Fare changes are saved to this browser.</p>
+      <button class="primary-button" id="save-fare" type="button">Save Fare</button>
+    </footer>
+  </main>
+
+  <script src="../site-config.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

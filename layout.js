@@ -33,13 +33,20 @@ function renderHeader() {
   }
 
   const page = getPageConfig();
+  const adminConfig = window.WizzCabsConfig ? window.WizzCabsConfig.load() : null;
+  const brand = adminConfig ? adminConfig.brand : {
+    siteName: "Wizz Cabs",
+    logo: "assets/logo.png",
+    footerDescription: "Modern taxi booking interface concept with a premium city-travel feel.",
+    footerBottom: "City journeys feel better when the booking experience stays simple, calm, and easy to trust."
+  };
 
   headerRoot.innerHTML = `
     <header class="site-header">
       <div class="site-header-inner">
-        <a class="header-brand" href="index.html" aria-label="RouteWave home">
-          <img class="header-logo" src="assets/dummy-logo.svg" alt="RouteWave logo">
-          <span class="sr-only">RouteWave home</span>
+        <a class="header-brand" href="index.html" aria-label="${brand.siteName} home">
+          <img class="header-logo" src="${brand.logo}" alt="${brand.siteName} logo">
+          <span class="sr-only">${brand.siteName} home</span>
         </a>
 
         <nav class="header-nav" aria-label="Primary navigation">
@@ -62,15 +69,23 @@ function renderFooter() {
     return;
   }
 
+  const adminConfig = window.WizzCabsConfig ? window.WizzCabsConfig.load() : null;
+  const brand = adminConfig ? adminConfig.brand : {
+    siteName: "Wizz Cabs",
+    logo: "assets/logo.png",
+    footerDescription: "Modern taxi booking interface concept with a premium city-travel feel.",
+    footerBottom: "City journeys feel better when the booking experience stays simple, calm, and easy to trust."
+  };
+
   footerRoot.innerHTML = `
     <footer class="site-footer">
       <div class="site-footer-inner">
         <div class="footer-brand-block">
-          <a class="footer-brand" href="index.html" aria-label="RouteWave home">
-            <img class="header-logo footer-logo" src="assets/dummy-logo.svg" alt="RouteWave logo">
+          <a class="footer-brand" href="index.html" aria-label="${brand.siteName} home">
+            <img class="header-logo footer-logo" src="${brand.logo}" alt="${brand.siteName} logo">
             <span class="footer-brand-copy">
-              <strong>RouteWave</strong>
-              <span>Modern taxi booking interface concept with a premium city-travel feel.</span>
+              <strong>${brand.siteName}</strong>
+              <span>${brand.footerDescription}</span>
             </span>
           </a>
         </div>
@@ -99,7 +114,7 @@ function renderFooter() {
       </div>
 
       <div class="site-footer-bottom">
-        <p>City journeys feel better when the booking experience stays simple, calm, and easy to trust.</p>
+        <p>${brand.footerBottom}</p>
       </div>
     </footer>
   `;

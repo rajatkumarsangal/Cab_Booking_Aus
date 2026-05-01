@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wizz Cabs | Admin Dashboard</title>
+  <script>
+    if (window.sessionStorage.getItem("wizzCabsAdminLoggedIn") !== "true") {
+      window.location.replace("login.html");
+    }
+  </script>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body data-admin-page="dashboard">
+  <main class="admin-shell">
+    <header class="admin-hero">
+      <div>
+        <p class="eyebrow">Admin dashboard</p>
+        <h1>Wizz Cabs Admin</h1>
+        <p>Choose one configuration area to manage.</p>
+      </div>
+      <div class="hero-actions">
+        <a class="ghost-button" href="../index.html">View Website</a>
+        <button class="danger-button" data-logout type="button">Log Out</button>
+      </div>
+    </header>
+
+    <nav class="admin-cards" aria-label="Admin sections">
+      <a class="admin-card" href="brand.html">
+        <span>Brand</span>
+        <strong>Website Content</strong>
+        <small>Logo path, site name, and footer text.</small>
+      </a>
+      <a class="admin-card" href="fare.html">
+        <span>Fare</span>
+        <strong>Fare Logic</strong>
+        <small>Fixed fare, estimate, schedule, and minimum fare rules.</small>
+      </a>
+      <a class="admin-card" href="vehicles.html">
+        <span>Fleet</span>
+        <strong>Vehicle Settings</strong>
+        <small>Vehicle images, service options, and pricing.</small>
+      </a>
+    </nav>
+
+    <section class="notice">
+      <strong>Current setup:</strong>
+      <span>This is still frontend-only. Login and settings are stored in this browser for now.</span>
+    </section>
+  </main>
+
+  <script src="../site-config.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

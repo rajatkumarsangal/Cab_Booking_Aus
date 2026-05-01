@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wizz Cabs | Vehicle Admin</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body data-admin-page="vehicles">
+  <main class="admin-shell">
+    <header class="admin-hero">
+      <div>
+        <p class="eyebrow">Fleet</p>
+        <h1>Vehicle Settings</h1>
+        <p>Manage vehicle/service options, images, and vehicle-level pricing.</p>
+      </div>
+      <div class="hero-actions">
+        <a class="ghost-button" href="index.html">Dashboard</a>
+        <button class="danger-button" data-logout type="button">Log Out</button>
+      </div>
+    </header>
+
+    <section class="notice" id="storage-notice">
+      <strong>Image storage:</strong>
+      <span>Choose <code>assets/vehicles</code> before uploading vehicle images, so files are saved into the project folder.</span>
+    </section>
+
+    <section class="panel vehicle-panel">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Settings</p>
+          <h2>Vehicles</h2>
+        </div>
+        <div class="hero-actions">
+          <button class="ghost-button" id="choose-image-folder" type="button">Choose Image Folder</button>
+          <button class="primary-button" id="add-vehicle" type="button">Add Vehicle</button>
+        </div>
+      </div>
+
+      <p class="folder-status" id="folder-status">No image folder selected for this session.</p>
+      <div class="vehicle-list" id="vehicle-list"></div>
+    </section>
+
+    <footer class="sticky-actions">
+      <p id="save-status">Vehicle changes are saved to this browser.</p>
+      <button class="primary-button" id="save-vehicles" type="button">Save Vehicles</button>
+    </footer>
+  </main>
+
+  <script src="../site-config.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

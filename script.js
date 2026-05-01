@@ -6,50 +6,24 @@ const state = {
   payment: ""
 };
 
-const vehicleData = {
-  next: {
-    label: "Next Available",
-    base: 18,
-    rate: 2.8,
-    etaOffset: 2
-  },
-  silver: {
-    label: "Silver Service",
-    base: 26,
-    rate: 3.4,
-    etaOffset: 4
-  },
-  sedan: {
-    label: "Sedan",
-    base: 20,
-    rate: 2.9,
-    etaOffset: 3
-  },
-  wheelchair: {
-    label: "Wheelchair",
-    base: 24,
-    rate: 3.2,
-    etaOffset: 5
-  },
-  metro: {
-    label: "Metro",
-    base: 18,
-    rate: 2.8,
-    etaOffset: 2
-  },
-  executive: {
-    label: "Executive",
-    base: 30,
-    rate: 3.9,
-    etaOffset: 4
-  },
-  maxi: {
-    label: "Maxi",
-    base: 34,
-    rate: 4.6,
-    etaOffset: 6
-  }
+const siteAdminConfig = window.WizzCabsConfig ? window.WizzCabsConfig.load() : null;
+const fareSettings = siteAdminConfig ? siteAdminConfig.fare : {
+  fixedFareAdjustment: 6,
+  estimateFareAdjustment: -3,
+  scheduledSurcharge: 4,
+  minimumFare: 0
 };
+const configuredVehicles = siteAdminConfig ? siteAdminConfig.vehicles : [];
+const activeVehicles = configuredVehicles.filter((vehicle) => vehicle.active !== false);
+if (!activeVehicles.length && configuredVehicles.length) {
+  activeVehicles.push(configuredVehicles[0]);
+}
+const vehicleData = activeVehicles.reduce((vehicles, vehicle) => {
+  vehicles[vehicle.id] = vehicle;
+  return vehicles;
+}, {});
+const defaultVehicleId = activeVehicles[0] ? activeVehicles[0].id : "next";
+state.vehicle = defaultVehicleId;
 
 const quickPickup = document.getElementById("quick-pickup");
 const quickDestination = document.getElementById("quick-destination");
@@ -90,12 +64,13 @@ const paymentMethod = document.getElementById("payment-method");
 const driverNotesCount = document.getElementById("driver-notes-count");
 const bookingConfirmation = document.getElementById("booking-confirmation");
 const carsListToggle = document.getElementById("cars-list-toggle");
+const carsList = document.getElementById("cars-list");
 
 const progressPills = document.querySelectorAll("[data-progress-step]");
 const stepPanels = document.querySelectorAll("[data-step-panel]");
 const tripModeButtons = document.querySelectorAll("[data-trip-mode]");
 const fareModeButtons = document.querySelectorAll("[data-fare-mode]");
-const vehicleInputs = document.querySelectorAll('input[name="vehicle"]');
+let vehicleInputs = document.querySelectorAll('input[name="vehicle"]');
 const paymentInputs = document.querySelectorAll('input[name="payment"]');
 const tagButtons = document.querySelectorAll("[data-preset]");
 const googleMapFrame = document.getElementById("google-map-frame");
@@ -111,6 +86,47 @@ const bookAnother = document.getElementById("book-another");
 const defaultMapSource = "https://maps.google.com/maps?q=Brisbane%20Australia&z=12&output=embed";
 let googleMapsLoadPromise;
 let latestTripMetrics = null;
+
+function escapeHTML(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function renderVehicleOptions() {
+  if (!carsList || !activeVehicles.length) {
+    return;
+  }
+
+  carsList.innerHTML = activeVehicles.map((vehicle, index) => {
+    const checked = vehicle.id === state.vehicle || (!state.vehicle && index === 0) ? " checked" : "";
+    const thumb = vehicle.image
+      ? `<span class="vehicle-thumb vehicle-thumb-image" aria-hidden="true"><img src="${escapeHTML(vehicle.image)}" alt=""></span>`
+      : `<span class="vehicle-thumb ${escapeHTML(vehicle.thumbClass || "taxi-thumb")}" aria-hidden="true"><span></span></span>`;
+
+    return `
+      <label class="car-list-row">
+        <input type="radio" name="vehicle" value="${escapeHTML(vehicle.id)}"${checked}>
+        <span class="car-selected-bar" aria-hidden="true"></span>
+        ${thumb}
+        <span class="car-copy">
+          <strong>${escapeHTML(vehicle.label)}</strong>
+          <span>${escapeHTML(vehicle.capacity)}</span>
+        </span>
+        <span class="info-dot" aria-hidden="true">i</span>
+        <span class="car-fare-copy">
+          <strong>Fare Estimate</strong>
+          <span>Dest required</span>
+        </span>
+      </label>
+    `;
+  }).join("");
+
+  vehicleInputs = document.querySelectorAll('input[name="vehicle"]');
+}
 
 function getGoogleMapsConfig() {
   const baseConfig = window.ROUTEWAVE_GOOGLE_MAPS_CONFIG || {};
@@ -258,7 +274,7 @@ function buildFallbackTripMetrics(pickup, destination, vehicle) {
     distance += 5;
   }
 
-  if (state.vehicle === "maxi") {
+  if (/maxi/i.test(state.vehicle)) {
     distance += 3;
   }
 
@@ -278,16 +294,16 @@ function calculateFareFromMetrics(vehicle, metrics) {
   let fare = vehicle.base + (metrics.distanceKm * vehicle.rate);
 
   if (state.fareMode === "fixed") {
-    fare += 6;
+    fare += Number(fareSettings.fixedFareAdjustment) || 0;
   } else {
-    fare -= 3;
+    fare += Number(fareSettings.estimateFareAdjustment) || 0;
   }
 
   if (state.tripMode === "later") {
-    fare += 4;
+    fare += Number(fareSettings.scheduledSurcharge) || 0;
   }
 
-  return Math.round(fare);
+  return Math.round(Math.max(Number(fareSettings.minimumFare) || 0, fare));
 }
 
 function getRouteMetricsSource(pickup, destination, vehicle) {
@@ -509,7 +525,7 @@ function updateRouteBrief(pickup, destination) {
 
 function calculateTrip() {
   const { pickup, destination } = getRouteValues();
-  const vehicle = vehicleData[state.vehicle] || vehicleData.next;
+  const vehicle = vehicleData[state.vehicle] || vehicleData[defaultVehicleId];
   updateRouteBrief(pickup, destination);
 
   if (!pickup || !destination) {
@@ -547,8 +563,8 @@ function updatePaymentSummary() {
 
 function updateVehicleSummary() {
   const selected = document.querySelector('input[name="vehicle"]:checked');
-  state.vehicle = selected ? selected.value : "next";
-  setText(summaryVehicle, (vehicleData[state.vehicle] || vehicleData.next).label);
+  state.vehicle = selected ? selected.value : defaultVehicleId;
+  setText(summaryVehicle, (vehicleData[state.vehicle] || vehicleData[defaultVehicleId]).label);
 }
 
 function validateRouteFields(errorElement) {
@@ -688,7 +704,7 @@ function resetFlow() {
   state.step = 2;
   state.tripMode = "now";
   state.fareMode = "fixed";
-  state.vehicle = "next";
+  state.vehicle = defaultVehicleId;
   state.payment = "";
 
   const bookingForm = document.getElementById("booking-form");
@@ -724,6 +740,8 @@ function resetFlow() {
   updateDriverNotesCount();
   setStep(2);
 }
+
+renderVehicleOptions();
 
 tripModeButtons.forEach((button) => {
   button.addEventListener("click", () => {

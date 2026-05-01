@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wizz Cabs | Brand Admin</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body data-admin-page="brand">
+  <main class="admin-shell">
+    <header class="admin-hero">
+      <div>
+        <p class="eyebrow">Brand</p>
+        <h1>Website Content</h1>
+        <p>Manage the shared brand details used by the website header and footer.</p>
+      </div>
+      <div class="hero-actions">
+        <a class="ghost-button" href="index.html">Dashboard</a>
+        <button class="danger-button" data-logout type="button">Log Out</button>
+      </div>
+    </header>
+
+    <section class="panel single-panel">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Settings</p>
+          <h2>Brand Details</h2>
+        </div>
+        <img class="logo-preview" id="logo-preview" src="../assets/logo.png" alt="Current logo preview">
+      </div>
+
+      <label class="field">
+        <span>Site name</span>
+        <input id="site-name" type="text">
+      </label>
+      <label class="field">
+        <span>Logo path</span>
+        <input id="logo-path" type="text" placeholder="assets/logo.png">
+      </label>
+      <label class="field">
+        <span>Footer description</span>
+        <textarea id="footer-description" rows="3"></textarea>
+      </label>
+      <label class="field">
+        <span>Footer bottom line</span>
+        <textarea id="footer-bottom" rows="3"></textarea>
+      </label>
+    </section>
+
+    <footer class="sticky-actions">
+      <p id="save-status">Brand changes are saved to this browser.</p>
+      <button class="primary-button" id="save-brand" type="button">Save Brand</button>
+    </footer>
+  </main>
+
+  <script src="../site-config.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
