@@ -1816,6 +1816,49 @@ body.is-booking-popup-open {
   background: linear-gradient(135deg, var(--accent), var(--accent-strong));
 }
 
+.trip-toggle {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+  padding: 0.35rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.trip-toggle-option {
+  min-height: 2.45rem;
+  border: 0;
+  border-radius: 999px;
+  color: var(--text-soft);
+  background: transparent;
+  font-weight: 700;
+  transition: color 180ms ease, background 180ms ease, transform 180ms ease;
+}
+
+.trip-toggle-option:hover {
+  transform: translateY(-1px);
+}
+
+.trip-toggle-option.is-active {
+  color: var(--logo-ink);
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+}
+
+.schedule-panel {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 0.8rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.schedule-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
 .cars-list-section {
   padding: 0;
   overflow: hidden;
@@ -2645,6 +2688,15 @@ body.is-booking-popup-open {
   .subpage-main {
     padding-left: 1rem;
     padding-right: 1rem;
+  }
+
+  .trip-toggle,
+  .fare-toggle {
+    grid-template-columns: 1fr;
+  }
+
+  .schedule-row {
+    grid-template-columns: 1fr;
   }
 
   .site-header-inner {

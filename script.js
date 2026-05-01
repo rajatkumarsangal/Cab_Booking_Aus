@@ -388,24 +388,38 @@ function setDefaultSchedule() {
   future.setMinutes(Math.ceil(future.getMinutes() / 5) * 5, 0, 0);
   const defaultDate = future.toISOString().slice(0, 10);
 
-  if (quickDate) {
-    quickDate.value = defaultDate;
-  }
-
   if (detailDate) {
+    detailDate.min = defaultDate;
     detailDate.value = defaultDate;
   }
+
+  populateTimeOptions();
 
   const hours = String(future.getHours()).padStart(2, "0");
   const minutes = String(future.getMinutes()).padStart(2, "0");
   const defaultTime = `${hours}:${minutes}`;
 
-  if (quickTime) {
-    quickTime.value = defaultTime;
-  }
-
   if (detailTime) {
     detailTime.value = defaultTime;
+  }
+}
+
+function populateTimeOptions() {
+  if (!detailTime) {
+    return;
+  }
+
+  detailTime.innerHTML = '<option value="">Select time</option>';
+
+  for (let hour = 0; hour < 24; hour++) {
+    for (let minute = 0; minute < 60; minute += 15) {
+      const timeValue = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+      const timeLabel = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+      const option = document.createElement("option");
+      option.value = timeValue;
+      option.textContent = timeLabel;
+      detailTime.appendChild(option);
+    }
   }
 }
 
@@ -899,6 +913,20 @@ if (sendOtp) {
 
 if (verifyOtp) {
   verifyOtp.addEventListener("click", verifyOtpCode);
+}
+
+if (detailDate) {
+  detailDate.addEventListener("change", () => {
+    updateTripModeUI();
+    calculateTrip();
+  });
+}
+
+if (detailTime) {
+  detailTime.addEventListener("change", () => {
+    updateTripModeUI();
+    calculateTrip();
+  });
 }
 
 if (otpCode) {

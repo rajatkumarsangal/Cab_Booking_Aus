@@ -145,6 +145,39 @@
             </div>
           </section>
 
+          <section class="booking-result-section trip-mode-section" aria-labelledby="trip-mode-title">
+            <div class="section-inline-header">
+              <div>
+                <span class="step-label">Trip time</span>
+                <h2 id="trip-mode-title">When do you need the ride?</h2>
+              </div>
+            </div>
+
+            <div class="trip-toggle" aria-label="Trip time">
+              <button class="trip-toggle-option is-active" type="button" data-trip-mode="now">
+                Book for now
+              </button>
+              <button class="trip-toggle-option" type="button" data-trip-mode="later">
+                Book for later
+              </button>
+            </div>
+
+            <div class="schedule-panel" id="schedule-panel">
+              <div class="schedule-row" id="detail-schedule-row">
+                <label class="result-field">
+                  <span>Pickup date</span>
+                  <input id="detail-date" type="date" min="">
+                </label>
+                <label class="result-field">
+                  <span>Pickup time</span>
+                  <select id="detail-time">
+                    <option value="">Select time</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+          </section>
+
           <section class="booking-result-section cars-list-section" aria-labelledby="cars-list-title">
             <button class="cars-list-header" id="cars-list-toggle" type="button" aria-expanded="true" aria-controls="cars-list">
               <span id="cars-list-title">More vehicle/service options</span>
