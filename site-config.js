@@ -4,7 +4,7 @@
   const defaultConfig = {
     brand: {
       siteName: "Wizz Cabs",
-      logo: "assets/logo.png",
+      logo: "assets/logo.jpeg",
       footerDescription: "Modern taxi booking interface concept with a premium city-travel feel.",
       footerBottom: "City journeys feel better when the booking experience stays simple, calm, and easy to trust."
     },
@@ -85,6 +85,9 @@
     }
 
     config.brand = { ...config.brand, ...(saved.brand || {}) };
+    if (config.brand.logo === "assets/logo.png") {
+      config.brand.logo = defaultConfig.brand.logo;
+    }
     config.fare = { ...config.fare, ...(saved.fare || {}) };
 
     if (Array.isArray(saved.vehicles) && saved.vehicles.length) {
