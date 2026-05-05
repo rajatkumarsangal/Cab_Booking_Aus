@@ -18,22 +18,10 @@
 
   <main>
     <section class="sketch-hero" id="home">
-      <p class="eyebrow">Sketch-led landing layout</p>
       <div class="sketch-frame">
-        <div class="sketch-frame-head">
-          <div class="frame-chip-row">
-            <span class="frame-chip">Pickup ready</span>
-            <span class="frame-chip">Map layout</span>
-            <span class="frame-chip">Live booking</span>
-          </div>
-          <div class="frame-chip-row frame-chip-row-right">
-            <span class="frame-chip frame-chip-accent">Book a taxi</span>
-          </div>
-        </div>
-
         <div class="sketch-body">
           <div class="sketch-form-shell">
-            <p class="sketch-lead">Book a ride with pickup and drop search directly over the route map.</p>
+            <p class="sketch-lead">Book a ride with pickup and drop search.</p>
 
             <div class="hero-input-cluster">
               <label class="hero-field">
@@ -92,23 +80,16 @@
               referrerpolicy="no-referrer-when-downgrade"
               src="https://maps.google.com/maps?q=Brisbane%20Australia&z=12&output=embed"
             ></iframe>
+            <div class="live-map-layer" aria-hidden="true">
+              <span class="map-drop-pin"></span>
+            </div>
+            <div class="map-control-stack" aria-hidden="true">
+              <span class="map-locate-control"></span>
+              <span class="map-zoom-control">+</span>
+              <span class="map-zoom-control">-</span>
+            </div>
             <div class="map-bubble bubble-perth" id="route-map-status">Search to load Google map route</div>
           </div>
-        </div>
-
-        <div class="frame-bottom-strip">
-          <a class="bottom-strip-item" href="#partners">
-            <span>Promotion</span>
-            <strong>New ride offers</strong>
-          </a>
-          <a class="bottom-strip-item" href="#partners">
-            <span>Become a Driver</span>
-            <strong>Join the fleet</strong>
-          </a>
-          <a class="bottom-strip-item" href="#download">
-            <span>App Download</span>
-            <strong>Track and manage rides</strong>
-          </a>
         </div>
       </div>
     </section>
@@ -422,49 +403,6 @@
           <strong>Mobile friendly</strong>
           <p>The card structure stacks neatly on smaller screens without losing the visual impact.</p>
         </article>
-      </div>
-    </section>
-
-    <section class="app-showcase" id="download">
-      <div class="app-copy">
-        <p class="eyebrow">Mobile handoff</p>
-        <h2>Promote the app without interrupting the booking flow.</h2>
-        <p>
-          This supporting section gives you space for app downloads, rider benefits, and feature highlights
-          while keeping the booking form as the main conversion point.
-        </p>
-
-        <div class="app-points">
-          <div>
-            <strong>Track the driver</strong>
-            <span>Use this for live vehicle updates later.</span>
-          </div>
-          <div>
-            <strong>Edit the ride</strong>
-            <span>Ideal for scheduled bookings and trip changes.</span>
-          </div>
-          <div>
-            <strong>Receive alerts</strong>
-            <span>Prepared for email and SMS notifications.</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="phone-mockup" aria-hidden="true">
-        <div class="phone-shell">
-          <div class="phone-top"></div>
-          <div class="phone-screen">
-            <div class="mockup-map"></div>
-            <div class="mockup-card primary">
-              <span>Driver arriving</span>
-              <strong>4 min away</strong>
-            </div>
-            <div class="mockup-card secondary">
-              <span>Next stop</span>
-              <strong>Riverside Towers</strong>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
 

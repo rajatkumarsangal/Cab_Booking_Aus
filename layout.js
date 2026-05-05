@@ -99,7 +99,6 @@ function renderFooter() {
 
           <div class="footer-column">
             <span class="footer-title">Explore</span>
-            <a href="index.html#download">App download</a>
             <a href="index.html#partners">Become a driver</a>
             <a href="contact-us.html">Business enquiries</a>
           </div>
