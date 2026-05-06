@@ -36,7 +36,7 @@ function renderHeader() {
   const adminConfig = window.WizzCabsConfig ? window.WizzCabsConfig.load() : null;
   const brand = adminConfig ? adminConfig.brand : {
     siteName: "Wizz Cabs",
-    logo: "assets/logo.jpeg",
+    logo: "assets/logo-clean.svg",
     footerDescription: "Modern taxi booking interface concept with a premium city-travel feel.",
     footerBottom: "City journeys feel better when the booking experience stays simple, calm, and easy to trust."
   };
@@ -72,7 +72,7 @@ function renderFooter() {
   const adminConfig = window.WizzCabsConfig ? window.WizzCabsConfig.load() : null;
   const brand = adminConfig ? adminConfig.brand : {
     siteName: "Wizz Cabs",
-    logo: "assets/logo.jpeg",
+    logo: "assets/logo-clean.svg",
     footerDescription: "Modern taxi booking interface concept with a premium city-travel feel.",
     footerBottom: "City journeys feel better when the booking experience stays simple, calm, and easy to trust."
   };

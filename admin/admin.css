@@ -550,11 +550,11 @@ body.is-admin-sidebar-collapsed .admin-sidebar-link {
 }
 
 .logo-preview {
-  width: 5.5rem;
-  height: 4rem;
+  width: 11rem;
+  height: 3.2rem;
   object-fit: contain;
   border-radius: 0.6rem;
-  background: #f5f5f5;
+  background: #ffffff;
 }
 
 .field,

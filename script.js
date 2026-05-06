@@ -172,7 +172,8 @@ function getGoogleMapsConfig() {
 function getSelectedPlaceMeta(input) {
   return {
     lat: input ? input.dataset.placeLat || "" : "",
-    lng: input ? input.dataset.placeLng || "" : ""
+    lng: input ? input.dataset.placeLng || "" : "",
+    placeId: input ? input.dataset.placeId || "" : ""
   };
 }
 
@@ -184,6 +185,7 @@ function clearSelectedPlaceMeta(input) {
   delete input.dataset.placeLat;
   delete input.dataset.placeLng;
   delete input.dataset.placeLabel;
+  delete input.dataset.placeId;
 }
 
 function copySelectedPlaceMeta(source, target) {
@@ -199,6 +201,7 @@ function copySelectedPlaceMeta(source, target) {
   target.dataset.placeLat = source.dataset.placeLat;
   target.dataset.placeLng = source.dataset.placeLng;
   target.dataset.placeLabel = source.dataset.placeLabel || source.value.trim();
+  target.dataset.placeId = source.dataset.placeId || "";
 }
 
 function storeSelectedPlaceMeta(input, place) {
@@ -217,6 +220,19 @@ function storeSelectedPlaceMeta(input, place) {
   input.dataset.placeLat = String(lat);
   input.dataset.placeLng = String(lng);
   input.dataset.placeLabel = place.formatted_address || place.name || input.value.trim();
+  input.dataset.placeId = place.place_id || "";
+}
+
+function getMapsEmbedLocation(meta, fallbackLabel) {
+  if (meta && meta.placeId) {
+    return `place_id:${meta.placeId}`;
+  }
+
+  if (meta && meta.lat && meta.lng) {
+    return `${meta.lat},${meta.lng}`;
+  }
+
+  return fallbackLabel;
 }
 
 function loadGoogleMapsApi() {
@@ -881,15 +897,25 @@ function updateGoogleMapRoute() {
     return;
   }
 
-  if (config.apiKey && pickupMeta.lat && pickupMeta.lng && destinationMeta.lat && destinationMeta.lng) {
-    const origin = encodeURIComponent(`${pickupMeta.lat},${pickupMeta.lng}`);
-    const destinationCoords = encodeURIComponent(`${destinationMeta.lat},${destinationMeta.lng}`);
-    googleMapFrame.src =
-      `https://www.google.com/maps/embed/v1/directions?key=${encodeURIComponent(config.apiKey)}&origin=${origin}&destination=${destinationCoords}&mode=${encodeURIComponent(config.mapMode)}`;
+  if (config.apiKey) {
+    const hasSelectedPlaces = Boolean(
+      (pickupMeta.placeId || (pickupMeta.lat && pickupMeta.lng)) &&
+      (destinationMeta.placeId || (destinationMeta.lat && destinationMeta.lng))
+    );
+    const params = new URLSearchParams({
+      key: config.apiKey,
+      origin: getMapsEmbedLocation(pickupMeta, pickup),
+      destination: getMapsEmbedLocation(destinationMeta, destination),
+      mode: config.mapMode,
+      units: "metric",
+      region: config.region
+    });
+
+    googleMapFrame.src = `https://www.google.com/maps/embed/v1/directions?${params.toString()}`;
     if (googleMapStage) {
       googleMapStage.classList.add("has-route");
     }
-    setText(routeMapStatus, "Google map route loaded from selected places");
+    setText(routeMapStatus, hasSelectedPlaces ? "Google route loaded from selected pickup and drop" : "Google route loaded");
     return;
   }
 

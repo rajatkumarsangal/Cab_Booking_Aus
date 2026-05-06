@@ -181,7 +181,7 @@ function bindBrandPage() {
 
   function readBrand() {
     config.brand.siteName = siteName.value.trim() || "Wizz Cabs";
-    config.brand.logo = logoPath.value.trim() || "assets/logo.jpeg";
+    config.brand.logo = logoPath.value.trim() || "assets/logo-clean.svg";
     config.brand.footerDescription = footerDescription.value.trim();
     config.brand.footerBottom = footerBottom.value.trim();
     logoPreview.src = adminAssetPath(config.brand.logo);
