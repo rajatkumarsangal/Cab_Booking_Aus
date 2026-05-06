@@ -686,7 +686,7 @@ button {
 .sketch-body {
   min-height: 31rem;
   display: grid;
-  grid-template-columns: minmax(300px, 420px) 1fr;
+  grid-template-columns: minmax(360px, 0.42fr) minmax(520px, 0.58fr);
   gap: 1.5rem;
   align-items: stretch;
   margin-top: 0;
@@ -3052,9 +3052,11 @@ body.is-booking-popup-open {
 .result-field select,
 #payment-method,
 #detail-time {
+  color-scheme: light;
   color: var(--logo-ink);
   border-color: rgba(var(--logo-teal-rgb), 0.18);
   background: rgba(255, 255, 255, 0.9);
+  caret-color: var(--logo-ink);
 }
 
 .hero-field input:focus,
@@ -3066,8 +3068,26 @@ body.is-booking-popup-open {
 .result-field select:focus,
 #payment-method:focus,
 #detail-time:focus {
+  color: var(--logo-ink);
   border-color: rgba(var(--logo-yellow-rgb), 0.9);
+  background: #ffffff;
   box-shadow: 0 0 0 0.22rem rgba(var(--logo-yellow-rgb), 0.18);
+}
+
+.hero-field input:-webkit-autofill,
+.field input:-webkit-autofill,
+.result-field input:-webkit-autofill,
+.hero-field input:-webkit-autofill:hover,
+.field input:-webkit-autofill:hover,
+.result-field input:-webkit-autofill:hover,
+.hero-field input:-webkit-autofill:focus,
+.field input:-webkit-autofill:focus,
+.result-field input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--logo-ink);
+  box-shadow:
+    0 0 0 1000px #ffffff inset,
+    0 0 0 0.22rem rgba(var(--logo-yellow-rgb), 0.18);
+  caret-color: var(--logo-ink);
 }
 
 .google-map-stage,
@@ -3166,7 +3186,7 @@ body.is-booking-popup-open {
 /* Hero split layout */
 .sketch-body {
   display: grid;
-  grid-template-columns: minmax(300px, 420px) minmax(0, 1fr);
+  grid-template-columns: minmax(360px, 0.42fr) minmax(520px, 0.58fr);
   gap: 1.25rem;
   align-items: stretch;
 }
