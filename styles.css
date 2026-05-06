@@ -41,6 +41,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
 }
 
 body {
@@ -77,11 +78,13 @@ button {
 }
 
 .site-header {
-  position: relative;
-  z-index: 30;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
   width: 100%;
   padding: 1rem 1rem 0;
-  background: transparent;
+  background: rgba(247, 250, 248, 0.78);
+  backdrop-filter: blur(14px);
 }
 
 .site-header-inner {
@@ -791,6 +794,13 @@ button {
 
 .hero-message {
   margin-top: 0.9rem;
+}
+
+.places-status {
+  margin: 0.75rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.84rem;
+  line-height: 1.45;
 }
 
 .map-stage {
@@ -3346,5 +3356,153 @@ body.is-booking-popup-open {
   .map-zoom-control {
     width: 2.35rem;
     height: 2.35rem;
+  }
+}
+
+.pac-container {
+  z-index: 9999;
+  border: 1px solid rgba(var(--logo-teal-rgb), 0.16);
+  border-radius: 0.85rem;
+  margin-top: 0.35rem;
+  overflow: hidden;
+  box-shadow: 0 18px 40px rgba(13, 55, 51, 0.16);
+  font-family: "Aptos", "Trebuchet MS", sans-serif;
+}
+
+.pac-item {
+  padding: 0.72rem 0.9rem;
+  color: var(--text-soft);
+  cursor: pointer;
+}
+
+.pac-item:hover,
+.pac-item-selected {
+  background: rgba(var(--logo-teal-rgb), 0.08);
+}
+
+.pac-item-query {
+  color: var(--logo-ink);
+  font-weight: 700;
+}
+
+/* Inline booking details in the left panel */
+.sketch-body > .sketch-form-shell {
+  max-height: 31rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--logo-teal-rgb), 0.55) rgba(var(--logo-teal-rgb), 0.08);
+}
+
+.sketch-form-shell .booking-results[hidden] {
+  display: none;
+}
+
+.sketch-form-shell .booking-results {
+  position: static;
+  inset: auto;
+  z-index: auto;
+  display: block;
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0;
+  background: transparent;
+  backdrop-filter: none;
+}
+
+.sketch-form-shell .booking-results-layout {
+  width: 100%;
+  max-height: none;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+  gap: 0.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.sketch-form-shell .booking-popup-header {
+  position: static;
+  top: auto;
+  padding: 0.1rem 0 0;
+  background: transparent;
+}
+
+.sketch-form-shell .booking-popup-header h2 {
+  font-size: 1.2rem;
+}
+
+.sketch-form-shell .booking-popup-close {
+  display: none;
+}
+
+.sketch-form-shell .booking-results-main {
+  grid-template-columns: 1fr;
+}
+
+.sketch-form-shell .trip-summary-section {
+  width: 100%;
+}
+
+.sketch-form-shell .schedule-panel {
+  display: block;
+}
+
+.sketch-form-shell .schedule-row {
+  grid-template-columns: minmax(9.5rem, 1fr) minmax(7.5rem, 0.8fr);
+  gap: 0.65rem;
+  align-items: end;
+}
+
+.sketch-form-shell .result-field span {
+  display: block;
+  white-space: normal;
+  font-size: 0.78rem;
+  line-height: 1.2;
+}
+
+.sketch-form-shell #detail-date,
+.sketch-form-shell #detail-time {
+  min-width: 0;
+  width: 100%;
+  min-height: 2.65rem;
+  padding: 0.58rem 1.6rem 0.58rem 0.72rem;
+  border-radius: 0.55rem;
+  font-size: 0.92rem;
+}
+
+.sketch-form-shell #detail-time {
+  line-height: 1.25;
+  padding-right: 1.55rem;
+}
+
+@media (max-width: 420px) {
+  .sketch-form-shell .schedule-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sketch-form-shell .booking-result-section,
+.sketch-form-shell .booking-confirmation,
+.sketch-form-shell .trip-summary-section {
+  box-shadow: none;
+}
+
+.sketch-form-shell .car-list-row {
+  grid-template-columns: 3.6rem minmax(0, 1fr);
+}
+
+.sketch-form-shell .info-dot,
+.sketch-form-shell .car-fare-copy {
+  display: none;
+}
+
+@media (max-width: 1080px) {
+  .sketch-body > .sketch-form-shell {
+    max-height: none;
   }
 }

@@ -67,6 +67,7 @@ const stepRoutePickup = document.getElementById("step-route-pickup");
 const stepRouteDestination = document.getElementById("step-route-destination");
 const bookingResults = document.getElementById("booking-results");
 const bookingPopupClose = document.getElementById("booking-popup-close");
+const sketchFormShell = document.querySelector(".sketch-form-shell");
 const requestBooking = document.getElementById("request-booking");
 const paymentMethod = document.getElementById("payment-method");
 const driverNotesCount = document.getElementById("driver-notes-count");
@@ -80,10 +81,10 @@ const tripModeButtons = document.querySelectorAll("[data-trip-mode]");
 const fareModeButtons = document.querySelectorAll("[data-fare-mode]");
 let vehicleInputs = document.querySelectorAll('input[name="vehicle"]');
 const paymentInputs = document.querySelectorAll('input[name="payment"]');
-const tagButtons = document.querySelectorAll("[data-preset]");
 const googleMapFrame = document.getElementById("google-map-frame");
 const googleMapStage = document.getElementById("google-map-stage");
 const routeMapStatus = document.getElementById("route-map-status");
+const placesStatus = document.getElementById("places-status");
 
 const continueToDetails = document.getElementById("continue-to-details");
 const backToRoute = document.getElementById("back-to-route");
@@ -93,7 +94,26 @@ const bookAnother = document.getElementById("book-another");
 
 const defaultMapSource = "https://maps.google.com/maps?q=Brisbane%20Australia&z=12&output=embed";
 let googleMapsLoadPromise;
+let googleMapsAuthFailed = false;
+let rejectGoogleMapsLoad = null;
 let latestTripMetrics = null;
+
+window.gm_authFailure = () => {
+  googleMapsAuthFailed = true;
+  if (rejectGoogleMapsLoad) {
+    rejectGoogleMapsLoad(new Error("Google Maps authentication failed. Check API key restrictions, billing, and enabled APIs."));
+  }
+};
+
+function mountBookingResultsInline() {
+  if (!bookingResults || !sketchFormShell || bookingResults.parentElement === sketchFormShell) {
+    return;
+  }
+
+  bookingResults.removeAttribute("role");
+  bookingResults.removeAttribute("aria-modal");
+  sketchFormShell.appendChild(bookingResults);
+}
 
 function escapeHTML(value) {
   return String(value || "")
@@ -166,6 +186,21 @@ function clearSelectedPlaceMeta(input) {
   delete input.dataset.placeLabel;
 }
 
+function copySelectedPlaceMeta(source, target) {
+  if (!source || !target) {
+    return;
+  }
+
+  if (!source.dataset.placeLat || !source.dataset.placeLng) {
+    clearSelectedPlaceMeta(target);
+    return;
+  }
+
+  target.dataset.placeLat = source.dataset.placeLat;
+  target.dataset.placeLng = source.dataset.placeLng;
+  target.dataset.placeLabel = source.dataset.placeLabel || source.value.trim();
+}
+
 function storeSelectedPlaceMeta(input, place) {
   if (!input || !place || !place.geometry || !place.geometry.location) {
     clearSelectedPlaceMeta(input);
@@ -200,26 +235,35 @@ function loadGoogleMapsApi() {
   }
 
   googleMapsLoadPromise = new Promise((resolve, reject) => {
+    rejectGoogleMapsLoad = reject;
+
     const existingScript = document.querySelector('script[data-google-maps-loader="true"]');
     if (existingScript) {
-      existingScript.addEventListener("load", () => resolve(window.google.maps), { once: true });
+      existingScript.addEventListener("load", () => {
+        if (window.google && window.google.maps && window.google.maps.places) {
+          resolve(window.google.maps);
+          return;
+        }
+
+        reject(new Error("Google Maps Places library not available."));
+      }, { once: true });
       existingScript.addEventListener("error", () => reject(new Error("Google Maps failed to load.")), { once: true });
       return;
     }
 
     const script = document.createElement("script");
-    const params = new URLSearchParams({
-      key: config.apiKey,
-      libraries: config.libraries.join(","),
-      region: config.region,
-      loading: "async"
-    });
+    const callbackName = "__wizzCabsGoogleMapsReady";
+    const timeoutId = window.setTimeout(() => {
+      reject(new Error("Google Maps took too long to load. Check network, API key restrictions, and enabled APIs."));
+    }, 12000);
 
-    script.src = `https://maps.googleapis.com/maps/api/js?${params.toString()}`;
-    script.async = true;
-    script.defer = true;
-    script.dataset.googleMapsLoader = "true";
-    script.onload = () => {
+    window[callbackName] = () => {
+      window.clearTimeout(timeoutId);
+      if (googleMapsAuthFailed) {
+        reject(new Error("Google Maps authentication failed. Check API key restrictions, billing, and enabled APIs."));
+        return;
+      }
+
       if (window.google && window.google.maps && window.google.maps.places) {
         resolve(window.google.maps);
         return;
@@ -227,23 +271,46 @@ function loadGoogleMapsApi() {
 
       reject(new Error("Google Maps Places library not available."));
     };
-    script.onerror = () => reject(new Error("Google Maps failed to load."));
+
+    const params = new URLSearchParams({
+      key: config.apiKey,
+      libraries: config.libraries.join(","),
+      region: config.region,
+      v: "weekly",
+      callback: callbackName,
+      loading: "async"
+    });
+
+    script.src = `https://maps.googleapis.com/maps/api/js?${params.toString()}`;
+    script.async = true;
+    script.defer = true;
+    script.dataset.googleMapsLoader = "true";
+    script.onerror = () => {
+      window.clearTimeout(timeoutId);
+      reject(new Error("Google Maps failed to load."));
+    };
     document.head.appendChild(script);
   });
 
   return googleMapsLoadPromise;
 }
 
-function attachPlacesAutocomplete(input) {
+function attachPlacesAutocomplete(input, onPlaceSelect) {
   if (!input || !window.google || !window.google.maps || !window.google.maps.places) {
+    return;
+  }
+
+  if (input.dataset.googlePlacesReady === "true") {
     return;
   }
 
   const config = getGoogleMapsConfig();
   const autocomplete = new window.google.maps.places.Autocomplete(input, {
-    fields: ["formatted_address", "geometry", "name"],
+    fields: ["formatted_address", "geometry", "name", "place_id"],
     componentRestrictions: config.country ? { country: config.country } : undefined
   });
+
+  input.dataset.googlePlacesReady = "true";
 
   autocomplete.addListener("place_changed", () => {
     const place = autocomplete.getPlace();
@@ -254,6 +321,12 @@ function attachPlacesAutocomplete(input) {
 
     input.value = place.formatted_address || place.name || input.value;
     storeSelectedPlaceMeta(input, place);
+    if (typeof onPlaceSelect === "function") {
+      onPlaceSelect(input, place);
+    }
+    showMessage(heroError, "");
+    showMessage(quickError, "");
+    calculateTrip();
     updateGoogleMapRoute();
   });
 
@@ -263,14 +336,43 @@ function attachPlacesAutocomplete(input) {
 }
 
 function initializeGoogleMapsAutocomplete() {
+  showMessage(placesStatus, "");
   loadGoogleMapsApi()
     .then(() => {
-      attachPlacesAutocomplete(quickPickup);
-      attachPlacesAutocomplete(quickDestination);
+      attachPlacesAutocomplete(quickPickup, () => {
+        if (detailPickup) {
+          detailPickup.value = quickPickup.value.trim();
+          copySelectedPlaceMeta(quickPickup, detailPickup);
+        }
+      });
+      attachPlacesAutocomplete(quickDestination, () => {
+        if (detailDestination) {
+          detailDestination.value = quickDestination.value.trim();
+          copySelectedPlaceMeta(quickDestination, detailDestination);
+        }
+      });
+      attachPlacesAutocomplete(detailPickup, () => {
+        if (quickPickup) {
+          quickPickup.value = detailPickup.value.trim();
+          copySelectedPlaceMeta(detailPickup, quickPickup);
+        }
+      });
+      attachPlacesAutocomplete(detailDestination, () => {
+        if (quickDestination) {
+          quickDestination.value = detailDestination.value.trim();
+          copySelectedPlaceMeta(detailDestination, quickDestination);
+        }
+      });
       setText(routeMapStatus, "Google Places dropdown ready");
+      showMessage(placesStatus, "");
     })
-    .catch(() => {
-      setText(routeMapStatus, "Google Places not configured yet");
+    .catch((error) => {
+      const message = error && error.message ? error.message : "Google Places not configured yet.";
+      setText(routeMapStatus, message);
+      showMessage(placesStatus, message);
+      if (window.console) {
+        console.warn(message);
+      }
     });
 }
 
@@ -385,7 +487,7 @@ function renderTripSummary(pickup, destination, vehicle, metrics) {
 
 function setDefaultSchedule() {
   const future = new Date(Date.now() + 90 * 60 * 1000);
-  future.setMinutes(Math.ceil(future.getMinutes() / 5) * 5, 0, 0);
+  future.setMinutes(Math.ceil(future.getMinutes() / 15) * 15, 0, 0);
   const defaultDate = future.toISOString().slice(0, 10);
 
   if (detailDate) {
@@ -547,10 +649,12 @@ function verifyOtpCode() {
 function syncRouteToDetails() {
   if (detailPickup) {
     detailPickup.value = quickPickup.value.trim();
+    copySelectedPlaceMeta(quickPickup, detailPickup);
   }
 
   if (detailDestination) {
     detailDestination.value = quickDestination.value.trim();
+    copySelectedPlaceMeta(quickDestination, detailDestination);
   }
 
   if (quickDate && detailDate && quickDate.value) {
@@ -563,12 +667,14 @@ function syncRouteToDetails() {
 }
 
 function syncRouteBackToQuick() {
-  if (quickPickup) {
+  if (quickPickup && detailPickup) {
     quickPickup.value = detailPickup.value.trim();
+    copySelectedPlaceMeta(detailPickup, quickPickup);
   }
 
-  if (quickDestination) {
+  if (quickDestination && detailDestination) {
     quickDestination.value = detailDestination.value.trim();
+    copySelectedPlaceMeta(detailDestination, quickDestination);
   }
 
   if (quickDate && detailDate) {
@@ -813,7 +919,7 @@ function revealBookingResults() {
   }
 
   bookingResults.hidden = false;
-  document.body.classList.add("is-booking-popup-open");
+  bookingResults.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
 function closeBookingResults() {
@@ -822,7 +928,6 @@ function closeBookingResults() {
   }
 
   bookingResults.hidden = true;
-  document.body.classList.remove("is-booking-popup-open");
 }
 
 function updateDriverNotesCount() {
@@ -878,6 +983,7 @@ function resetFlow() {
   setStep(2);
 }
 
+mountBookingResultsInline();
 renderVehicleOptions();
 
 tripModeButtons.forEach((button) => {
@@ -966,20 +1072,6 @@ if (bookingPopupClose) {
   bookingPopupClose.addEventListener("click", closeBookingResults);
 }
 
-if (bookingResults) {
-  bookingResults.addEventListener("click", (event) => {
-    if (event.target === bookingResults) {
-      closeBookingResults();
-    }
-  });
-}
-
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && bookingResults && !bookingResults.hidden) {
-    closeBookingResults();
-  }
-});
-
 [quickPickup, quickDestination, detailPickup, detailDestination, detailDate, detailTime].filter(Boolean).forEach((field) => {
   field.addEventListener("input", () => {
     if (field === quickPickup || field === quickDestination) {
@@ -991,30 +1083,6 @@ document.addEventListener("keydown", (event) => {
   });
 
   field.addEventListener("change", calculateTrip);
-});
-
-tagButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    const preset = button.dataset.preset;
-
-    if (preset === "Airport") {
-      quickPickup.value = "Brisbane Airport Terminal";
-      quickDestination.value = "Riverside Towers, Brisbane";
-    } else if (preset === "Hotel") {
-      quickPickup.value = "Harbour View Hotel";
-      quickDestination.value = "Convention Centre";
-    } else if (preset === "Corporate") {
-      quickPickup.value = "Central Business District";
-      quickDestination.value = "North Wharf Offices";
-    } else {
-      quickPickup.value = "City Arena Entrance";
-      quickDestination.value = "Parkside Apartments";
-    }
-
-    showMessage(heroError, "");
-    showMessage(quickError, "");
-    calculateTrip();
-  });
 });
 
 heroSearch.addEventListener("click", () => {
