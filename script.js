@@ -711,10 +711,12 @@ function updateTripModeUI() {
 
   if (schedulePanel) {
     schedulePanel.classList.toggle("is-hidden", !isLater);
+    schedulePanel.hidden = !isLater;
   }
 
   if (detailScheduleRow) {
     detailScheduleRow.classList.toggle("is-hidden", !isLater);
+    detailScheduleRow.hidden = !isLater;
   }
 
   setText(summaryTripTime, isLater && detailDate && detailTime && detailDate.value && detailTime.value

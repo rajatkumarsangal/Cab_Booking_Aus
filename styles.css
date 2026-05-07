@@ -1802,6 +1802,10 @@ body.is-booking-popup-open {
   gap: 0.75rem;
 }
 
+.is-hidden {
+  display: none !important;
+}
+
 .cars-list-section {
   padding: 0;
   overflow: hidden;
@@ -3467,7 +3471,7 @@ body.is-booking-popup-open {
   width: 100%;
 }
 
-.sketch-form-shell .schedule-panel {
+.sketch-form-shell .schedule-panel:not(.is-hidden) {
   display: block;
 }
 
