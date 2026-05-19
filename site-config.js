@@ -85,7 +85,8 @@
     }
 
     config.brand = { ...config.brand, ...(saved.brand || {}) };
-    if (["assets/logo.png", "assets/logo.jpg", "assets/logo-crisp.svg", "assets/logo-clean.svg"].includes(config.brand.logo)) {
+    const validLogoPaths = ["assets/logo.jpeg", "assets/logo.png", "assets/logo-crisp.svg", "assets/logo-clean.svg"];
+    if (!config.brand.logo || !validLogoPaths.includes(config.brand.logo)) {
       config.brand.logo = defaultConfig.brand.logo;
     }
     config.fare = { ...config.fare, ...(saved.fare || {}) };

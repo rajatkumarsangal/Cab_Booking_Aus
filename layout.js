@@ -45,7 +45,7 @@ function renderHeader() {
     <header class="site-header">
       <div class="site-header-inner">
         <a class="header-brand" href="index.html" aria-label="${brand.siteName} home">
-          <img class="header-logo" src="${brand.logo}" alt="${brand.siteName} logo">
+          <img class="header-logo" src="${brand.logo}" alt="${brand.siteName} logo" onerror="this.onerror=null;this.src='assets/logo.jpeg';">
           <span class="sr-only">${brand.siteName} home</span>
         </a>
 
