@@ -4917,7 +4917,19 @@ body[data-page="home"] .google-map-stage .booking-popup-header {
 }
 
 body[data-page="home"] .google-map-stage .booking-popup-close {
-  display: none;
+  display: inline-flex;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 0.65rem;
+  border: 1px solid #d2d7dc;
+  background: #ffffff;
+  color: #1c1c1c;
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.12);
+}
+
+body[data-page="home"] .google-map-stage .booking-popup-close:hover {
+  border-color: #bfc7ce;
+  background: #f7f9fb;
 }
 
 body[data-page="home"] .google-map-stage .booking-results-main {
