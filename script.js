@@ -106,13 +106,15 @@ window.gm_authFailure = () => {
 };
 
 function mountBookingResultsInline() {
-  if (!bookingResults || !sketchFormShell || bookingResults.parentElement === sketchFormShell) {
+  const bookingHost = googleMapStage || sketchFormShell;
+
+  if (!bookingResults || !bookingHost || bookingResults.parentElement === bookingHost) {
     return;
   }
 
   bookingResults.removeAttribute("role");
   bookingResults.removeAttribute("aria-modal");
-  sketchFormShell.appendChild(bookingResults);
+  bookingHost.appendChild(bookingResults);
 }
 
 function escapeHTML(value) {
@@ -947,6 +949,15 @@ function revealBookingResults() {
   }
 
   bookingResults.hidden = false;
+
+  if (googleMapStage && bookingResults.parentElement === googleMapStage) {
+    const resultsLayout = bookingResults.querySelector(".booking-results-layout");
+    if (resultsLayout) {
+      resultsLayout.scrollTop = 0;
+    }
+    return;
+  }
+
   bookingResults.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 

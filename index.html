@@ -17,60 +17,56 @@
   <div id="site-header-root"></div>
 
   <main>
-    <section class="sketch-hero" id="home">
-      <div class="sketch-frame">
-        <div class="sketch-body">
-          <div class="sketch-form-shell">
-            <p class="sketch-lead">Book a ride with pickup and drop search.</p>
+    <section class="sketch-hero uber-home" id="home">
+      <div class="uber-layout">
+        <div class="sketch-form-shell uber-panel">
+          <h1 class="uber-title">Get a ride</h1>
 
-            <div class="hero-input-cluster">
-              <label class="hero-field">
-                <span>Pickup</span>
-                <input
-                  id="quick-pickup"
-                  type="text"
-                  placeholder="Enter pickup address"
-                  autocomplete="off"
-                >
-              </label>
+          <label class="uber-field uber-field-focus uber-pickup-field">
+            <span class="uber-icon uber-icon-dot" aria-hidden="true"></span>
+            <input
+              id="quick-pickup"
+              type="text"
+              placeholder="Pickup location"
+              autocomplete="off"
+            >
+          </label>
 
-              <label class="hero-field">
-                <span>Drop</span>
-                <input
-                  id="quick-destination"
-                  type="text"
-                  placeholder="Enter destination"
-                  autocomplete="off"
-                >
-              </label>
+          <label class="uber-field uber-dropoff-field">
+            <span class="uber-icon uber-icon-square" aria-hidden="true"></span>
+            <input
+              id="quick-destination"
+              type="text"
+              placeholder="Dropoff location"
+              autocomplete="off"
+            >
+          </label>
 
-              <button class="hero-search-button" id="hero-search" type="button" aria-label="Search route">
-                <span class="search-icon" aria-hidden="true"></span>
-              </button>
-            </div>
-            <p class="places-status" id="places-status" hidden></p>
-            <p class="panel-message hero-message" id="hero-error" hidden></p>
+          <button class="hero-search-button uber-search-button" id="hero-search" type="button">
+            Search
+          </button>
+
+          <p class="places-status" id="places-status" hidden></p>
+          <p class="panel-message hero-message" id="hero-error" hidden></p>
+        </div>
+
+        <div class="map-stage google-map-stage uber-map" id="google-map-stage" aria-label="Google map route preview">
+          <iframe
+            id="google-map-frame"
+            title="Google map route preview"
+            loading="lazy"
+            allowfullscreen
+            referrerpolicy="no-referrer-when-downgrade"
+            src="https://maps.google.com/maps?q=Brisbane%20Australia&z=12&output=embed"
+          ></iframe>
+          <div class="live-map-layer" aria-hidden="true">
+            <span class="map-drop-pin"></span>
           </div>
-
-          <div class="map-stage google-map-stage" id="google-map-stage" aria-label="Google map route preview">
-            <iframe
-              id="google-map-frame"
-              title="Google map route preview"
-              loading="lazy"
-              allowfullscreen
-              referrerpolicy="no-referrer-when-downgrade"
-              src="https://maps.google.com/maps?q=Brisbane%20Australia&z=12&output=embed"
-            ></iframe>
-            <div class="live-map-layer" aria-hidden="true">
-              <span class="map-drop-pin"></span>
-            </div>
-            <div class="map-control-stack" aria-hidden="true">
-              <span class="map-locate-control"></span>
-              <span class="map-zoom-control">+</span>
-              <span class="map-zoom-control">-</span>
-            </div>
-            <div class="map-bubble bubble-perth" id="route-map-status">Search to load Google map route</div>
+          <div class="map-control-stack" aria-hidden="true">
+            <span class="map-zoom-control">+</span>
+            <span class="map-zoom-control">-</span>
           </div>
+          <div class="map-bubble bubble-perth" id="route-map-status">Search to load Google map route</div>
         </div>
       </div>
     </section>
@@ -361,47 +357,6 @@
       </div>
     </section>
 
-    <section class="benefits" id="benefits">
-      <div class="section-heading">
-        <p class="eyebrow">Why this UI works</p>
-        <h2>Designed around clarity, speed, and conversion.</h2>
-      </div>
-
-      <div class="benefit-grid">
-        <article class="benefit-card">
-          <strong>Quick entry</strong>
-          <p>The first screen keeps the route setup simple so users can start fast without feeling overloaded.</p>
-        </article>
-        <article class="benefit-card">
-          <strong>Visible pricing</strong>
-          <p>Fare mode, live summary, and service choice stay visible while the user completes the booking.</p>
-        </article>
-        <article class="benefit-card">
-          <strong>Future-ready</strong>
-          <p>The layout leaves clear places for maps, payment, dispatch, and confirmation messaging.</p>
-        </article>
-        <article class="benefit-card">
-          <strong>Mobile friendly</strong>
-          <p>The card structure stacks neatly on smaller screens without losing the visual impact.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="partner-strip" id="partners">
-      <article class="partner-card">
-        <p class="eyebrow">Become a driver</p>
-        <h3>Add a recruitment CTA without cluttering the booking flow.</h3>
-        <p>Perfect for promoting driver partnerships, onboarding, and support links from the landing page.</p>
-        <a class="inline-link" href="#home">View opportunities</a>
-      </article>
-
-      <article class="partner-card accent-card">
-        <p class="eyebrow">Promotions</p>
-        <h3>Highlight offers, airport bundles, or business account benefits.</h3>
-        <p>Use this block for launch promotions, first-ride offers, or repeat customer benefits.</p>
-        <a class="inline-link" href="#home">See current offers</a>
-      </article>
-    </section>
   </main>
 
   <div id="site-footer-root"></div>

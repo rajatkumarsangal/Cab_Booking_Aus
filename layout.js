@@ -42,21 +42,21 @@ function renderHeader() {
   };
 
   headerRoot.innerHTML = `
-    <header class="site-header">
-      <div class="site-header-inner">
-        <a class="header-brand" href="index.html" aria-label="${brand.siteName} home">
-          <img class="header-logo" src="${brand.logo}" alt="${brand.siteName} logo" onerror="this.onerror=null;this.src='assets/logo.jpeg';">
+    <header class="site-header home-header">
+      <div class="site-header-inner home-header-inner">
+        <a class="header-brand home-brand" href="index.html" aria-label="${brand.siteName} home">
+          <img class="header-logo home-logo" src="${brand.logo}" alt="${brand.siteName} logo" onerror="this.onerror=null;this.src='assets/logo.jpeg';">
           <span class="sr-only">${brand.siteName} home</span>
         </a>
 
-        <nav class="header-nav" aria-label="Primary navigation">
-          ${navLink("Book a taxi", "index.html", page.nav === "book")}
-          ${navLink("Contact us", "contact-us.html", page.nav === "contact")}
+        <nav class="home-nav" aria-label="Service navigation">
+          <a class="home-tab ${page.nav === "book" ? "is-active" : ""}" href="index.html"><span class="home-tab-icon home-tab-icon-ride" aria-hidden="true"></span><span>Book a Taxi</span></a>
+          <a class="home-tab ${page.nav === "contact" ? "is-active" : ""}" href="contact-us.html"><span>Contact us</span></a>
         </nav>
 
-        <div class="header-auth">
-          <a class="header-login ${page.nav === "login" ? "is-active" : ""}" href="login.html">Log in</a>
-          <a class="header-signup ${page.nav === "signup" ? "is-active" : ""}" href="signup.html">Sign up</a>
+        <div class="home-actions">
+          <a class="home-login ${page.nav === "login" ? "is-active" : ""}" href="login.html">Log in</a>
+          <a class="home-signup ${page.nav === "signup" ? "is-active" : ""}" href="signup.html">Sign up</a>
         </div>
       </div>
     </header>

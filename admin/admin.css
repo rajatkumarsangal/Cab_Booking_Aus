@@ -765,3 +765,193 @@ body.is-admin-sidebar-collapsed .admin-sidebar-link {
     min-width: 0;
   }
 }
+
+/* Admin UI refresh overrides: tighter spacing, clearer hierarchy, and cleaner responsive behavior */
+:root {
+  --line-strong: rgba(255, 255, 255, 0.16);
+  --panel-elevated: rgba(16, 35, 50, 0.95);
+}
+
+.admin-shell {
+  width: min(1240px, calc(100% - 2rem));
+  padding-bottom: 8.6rem;
+}
+
+.admin-hero,
+.panel,
+.notice,
+.sticky-actions,
+.login-panel,
+.admin-card {
+  background: var(--panel-elevated);
+  border-color: var(--line-strong);
+}
+
+.admin-hero {
+  padding: 1.75rem;
+  gap: 1.25rem;
+}
+
+.admin-hero p {
+  margin: 0.5rem 0 0;
+}
+
+.hero-actions {
+  gap: 0.75rem;
+}
+
+.primary-button,
+.ghost-button,
+.danger-button {
+  min-height: 2.85rem;
+  padding: 0.78rem 1.05rem;
+  font-size: 0.94rem;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.primary-button {
+  box-shadow: 0 10px 20px rgba(255, 191, 47, 0.2);
+}
+
+.primary-button:hover,
+.ghost-button:hover,
+.danger-button:hover {
+  transform: translateY(-1px);
+}
+
+.admin-cards {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.15rem;
+}
+
+.admin-card {
+  min-height: 10.8rem;
+  padding: 1.15rem;
+  border-radius: 0.95rem;
+  border-left: 0.24rem solid rgba(255, 191, 47, 0.38);
+}
+
+.admin-card small {
+  line-height: 1.5;
+}
+
+.panel {
+  padding: 1.25rem;
+}
+
+.panel-header {
+  margin-bottom: 1.1rem;
+}
+
+.logo-preview {
+  width: clamp(8rem, 24vw, 11rem);
+  height: auto;
+  min-height: 2.8rem;
+  padding: 0.25rem;
+}
+
+.field,
+.toggle-field {
+  gap: 0.65rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.field input,
+.field textarea {
+  min-height: 2.8rem;
+  padding: 0.72rem 0.82rem;
+  border-radius: 0.72rem;
+}
+
+.field textarea {
+  min-height: 5.8rem;
+}
+
+.field input:focus,
+.field textarea:focus,
+.primary-button:focus-visible,
+.ghost-button:focus-visible,
+.danger-button:focus-visible,
+.admin-sidebar-link:focus-visible {
+  outline: 2px solid rgba(255, 191, 47, 0.85);
+  outline-offset: 2px;
+}
+
+.vehicle-list {
+  gap: 1rem;
+}
+
+.vehicle-card {
+  grid-template-columns: 6.2rem 1fr auto;
+  gap: 1.2rem;
+  padding: 1.05rem;
+  border-radius: 0.95rem;
+}
+
+.vehicle-image {
+  width: 6.2rem;
+  height: 4.35rem;
+  border-radius: 0.6rem;
+}
+
+.vehicle-fields {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.82rem;
+}
+
+.vehicle-fields .wide {
+  grid-column: span 2;
+}
+
+.card-actions {
+  gap: 0.65rem;
+}
+
+.sticky-actions {
+  bottom: 0.8rem;
+  width: min(1240px, calc(100% - 2rem));
+  padding: 0.9rem 1rem;
+  border-radius: 1rem;
+}
+
+.sticky-actions p {
+  line-height: 1.4;
+}
+
+@media (max-width: 980px) {
+  .vehicle-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .admin-shell {
+    padding-bottom: 7.8rem;
+  }
+
+  .sticky-actions {
+    width: calc(100% - 1.5rem);
+    bottom: 0.6rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .vehicle-image {
+    width: 5rem;
+    height: 3.5rem;
+  }
+
+  .vehicle-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .vehicle-fields .wide {
+    grid-column: auto;
+  }
+
+  .panel,
+  .admin-hero {
+    padding: 1rem;
+  }
+}
