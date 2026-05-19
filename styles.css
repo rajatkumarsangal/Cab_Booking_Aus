@@ -135,9 +135,6 @@ button {
   border-radius: 0.85rem;
   object-fit: contain;
   background: #ffffff;
-  box-shadow:
-    0 10px 22px rgba(0, 0, 0, 0.16),
-    0 0 0 1px rgba(255, 255, 255, 0.22);
 }
 
 .sr-only {
